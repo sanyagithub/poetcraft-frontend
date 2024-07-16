@@ -34,8 +34,13 @@ const registerUser = async (email, password) => {
 const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      console.error('Passwords do not match');
+      return;
+    }
     try {
       await registerUser(email, password);
       navigation.navigate('Login');
@@ -76,8 +81,15 @@ const RegisterScreen = ({navigation}) => {
           value={password}
           onChangeText={setPassword}
         />
-        <Pressable style={styles.buttonContainer} onPress={handleRegister}>
-          <Text style={styles.buttonTitle}>Sign Up</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <Pressable style={commonStyles.buttonContainer} onPress={handleRegister}>
+          <Text style={commonStyles.buttonTitle}>Sign Up</Text>
         </Pressable>
       </View>
     </GradientBackground>
@@ -94,11 +106,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 25,
     borderRadius: 20,
-    borderColor: '#F5D867',
+    borderColor: '#DDB1E4',
     borderWidth: 3,
     fontSize: 18,
-    marginLeft: 25,
-    marginRight: 25,
+   // marginLeft: 25,
+  //  marginRight: 25,
   },
   buttonContainer: {
     marginBottom: 25,
@@ -118,21 +130,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   text: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 20,
     marginLeft: 30,
     marginBottom: 10,
   },
   linkText: {
     color: 'blue',
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     textDecorationLine: 'underline',
     fontSize: 10,
     alignSelf: 'center',
     marginBottom: 2,
   },
   text_login: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 12,
     alignSelf: 'center',
     marginBottom: 20,
@@ -144,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   buttonTitle: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     alignSelf: 'center',
     fontSize: 25,
     color: 'white',

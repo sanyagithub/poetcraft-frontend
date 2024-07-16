@@ -66,8 +66,8 @@ const ResetPasswordScreen = ({navigation}) => {
           value={email}
           onChangeText={setEmail}
         />
-        <Pressable style={styles.buttonContainer} onPress={handleResetPassword}>
-          <Text style={styles.buttonTitle}>Send Reset Link</Text>
+        <Pressable style={commonStyles.buttonContainer} onPress={handleResetPassword}>
+          <Text style={commonStyles.buttonTitle}>Send Reset Link</Text>
         </Pressable>
         <Text style={styles.text_login}>
           Remembered your password?{' '}
@@ -90,11 +90,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 25,
     borderRadius: 20,
-    borderColor: '#F5D867',
+    borderColor: '#DDB1E4',
     borderWidth: 3,
     fontSize: 18,
-    marginLeft: 25,
-    marginRight: 25,
   },
   buttonContainer: {
     marginBottom: 25,
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   text: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Bold',
     fontSize: 20,
     marginLeft: 30,
     marginBottom: 10,
@@ -128,16 +126,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   text_login: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 12,
     alignSelf: 'center',
+    marginTop: 20,
     marginBottom: 20,
   },
   text_title: {
     fontFamily: 'Teachers-Bold',
     fontSize: 30,
     alignSelf: 'center',
-    marginBottom: 2,
+    marginBottom: 20,
   },
   buttonTitle: {
     fontFamily: 'TildaSans-Regular',

@@ -384,24 +384,24 @@ const Login = ({navigation}) => {
               style={styles.image}
             />
             <Text style={styles.textTitle}>Login</Text>
-            <View style={styles.toggleContainer}>
-              <Pressable
-                style={[
-                  styles.toggleButton,
-                  loginMethod === 'email' && styles.activeToggleButton,
-                ]}
-                onPress={() => setLoginMethod('email')}>
-                <Text style={styles.toggleButtonText}>Email</Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.toggleButton,
-                  loginMethod === 'phone' && styles.activeToggleButton,
-                ]}
-                onPress={() => setLoginMethod('phone')}>
-                <Text style={styles.toggleButtonText}>Phone</Text>
-              </Pressable>
-            </View>
+            {/*<View style={styles.toggleContainer}>*/}
+            {/*  <Pressable*/}
+            {/*    style={[*/}
+            {/*      styles.toggleButton,*/}
+            {/*      loginMethod === 'email' && styles.activeToggleButton,*/}
+            {/*    ]}*/}
+            {/*    onPress={() => setLoginMethod('email')}>*/}
+            {/*    <Text style={styles.toggleButtonText}>Email</Text>*/}
+            {/*  </Pressable>*/}
+            {/*  <Pressable*/}
+            {/*    style={[*/}
+            {/*      styles.toggleButton,*/}
+            {/*      loginMethod === 'phone' && styles.activeToggleButton,*/}
+            {/*    ]}*/}
+            {/*    onPress={() => setLoginMethod('phone')}>*/}
+            {/*    <Text style={styles.toggleButtonText}>Phone</Text>*/}
+            {/*  </Pressable>*/}
+            {/*</View>*/}
             {loginMethod === 'email' ? (
               <>
                 <TextInput
@@ -623,19 +623,19 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 14,
     marginBottom: 10,
     alignSelf: 'center',
   },
   timerText: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 14,
     alignSelf: 'center',
     marginVertical: 10,
   },
   forgotPassword: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 14,
     color: 'blue',
     textDecorationLine: 'underline',
@@ -643,7 +643,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textRegister: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     fontSize: 14,
     alignSelf: 'center',
     marginBottom: 20,
