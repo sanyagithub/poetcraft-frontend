@@ -4,7 +4,7 @@ import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
 import {checkAuthentication} from './auth'; // Ensure the path is correct
 import {useNavigation} from '@react-navigation/native';
-import {globalAudioFIles, playSound} from './audio';
+import {globalAudioFiles, playSound} from './audio';
 
 const SplashScreen = () => {
   const navigation = useNavigation(); // Use useNavigation hook
@@ -59,7 +59,7 @@ const SplashScreen = () => {
 
       // Play the heartbeat sound in sync with the animation
       const playHeartbeatSound = () => {
-        playSound(globalAudioFIles.heartbeat);
+        playSound(globalAudioFiles.heartbeat);
       };
 
       // Start playing the sound immediately and then repeat it at intervals to match the animation duration

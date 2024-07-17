@@ -14,7 +14,7 @@ import Sound from 'react-native-sound';
 import {getAudio} from './api';
 import commonStyles from './commonStyles';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import {globalAudioFIles, playSound} from './audio';
+import {globalAudioFiles, playSound} from './audio';
 
 // Main function component for Poem Scansion
 const WordScantion = ({
@@ -59,7 +59,7 @@ const WordScantion = ({
 
   // Handle input changes for marking stressed or unstressed syllables
   const handleInputChange = syllableIndex => {
-    playSound(globalAudioFIles.tapClick);
+    playSound(globalAudioFiles.tapClick);
     const newInput = userInput.map((syllable, index) => {
       if (index === syllableIndex) {
         return currentStep === 1
@@ -179,7 +179,7 @@ const WordScantion = ({
             </Text>
             <View style={styles.audioContainer}>
               <TouchableOpacity
-                onPress={() => playSound(globalAudioFIles[audioFile])}>
+                onPress={() => playSound(globalAudioFiles[audioFile])}>
                 <Image
                   source={require('./images/listenbtn.png')}
                   style={styles.audio_image}

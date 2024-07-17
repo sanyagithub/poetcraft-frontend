@@ -15,7 +15,7 @@ import {getPoem} from './api';
 import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFIles, playSound } from "./audio";
+import { audioFiles, globalAudioFiles, playSound } from "./audio";
 
 const PoemScansion = ({
   poemId,
@@ -95,7 +95,7 @@ const PoemScansion = ({
   // }, [feedback]);
 
   const handleInputChange = (lineIndex, syllableIndex) => {
-    playSound(globalAudioFIles.tapClick);
+    playSound(globalAudioFiles.tapClick);
     const newInput = userInput.map((line, i) =>
       i === lineIndex
         ? line.map((syllable, j) => {
@@ -323,7 +323,7 @@ const PoemScansion = ({
               <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
             <Text style={styles.poemText}>{poemText}</Text>
-            <TouchableOpacity onPress={() => playSound(globalAudioFIles[audioFile])}>
+            <TouchableOpacity onPress={() => playSound(globalAudioFiles[audioFile])}>
               <Image
                 source={require('./images/listenbtn.png')}
                 style={styles.audio_image}

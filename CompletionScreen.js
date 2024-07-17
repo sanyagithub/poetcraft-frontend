@@ -6,7 +6,7 @@ import Module2Image from './images/Syllable_Savant.png';
 import Module3Image from './images/Scansion_Sensei.png';
 import Module4Image from './images/Metrical_Master.png';
 import Module5Image from './images/Scansion_Sleuth.png';
-import {globalAudioFIles, playSound} from './audio';
+import { globalAudioFiles, playSound } from "./audio";
 import GradientBackground from './GradientBackground';
 import commonStyles from './commonStyles';
 
@@ -35,7 +35,7 @@ const CompletionScreen = ({route}) => {
 
   useEffect(() => {
     // Play the sound when the component mounts
-    playSound(globalAudioFIles.wee); // Replace with the actual filename of your sound
+    playSound(globalAudioFiles.wee); // Replace with the actual filename of your sound
 
     // Cleanup function if necessary
     return () => {

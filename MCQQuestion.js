@@ -12,7 +12,7 @@ import {
 import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFIles, playSound } from "./audio";
+import { audioFiles, globalAudioFiles, playSound } from "./audio";
 
 const MCQQuestion = ({
   question,
@@ -50,7 +50,7 @@ const MCQQuestion = ({
     return str;
   };
   const handleAnswerClick = answer => {
-    playSound(globalAudioFIles.tapClick);
+    playSound(globalAudioFiles.tapClick);
     setSelectedAnswer(answer);
 
     // Check if the answer is correct (e.g., for demonstration, assuming 'Answer 1' is correct)

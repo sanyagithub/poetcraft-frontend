@@ -8,7 +8,7 @@ import {
   Animated,
   Modal,
 } from 'react-native';
-import { globalAudioFIles, playSound } from "./audio";
+import { globalAudioFiles, playSound } from "./audio";
 
 const AnswerFeedbackModal = ({
   isVisible,
@@ -29,8 +29,8 @@ const AnswerFeedbackModal = ({
         visible={isVisible}
         onRequestClose={closeModal}>
         {isAnswerCorrect
-          ? playSound(globalAudioFIles.CorrectAnswer)
-          : playSound(globalAudioFIles.WrongAnswer)}
+          ? playSound(globalAudioFiles.CorrectAnswer)
+          : playSound(globalAudioFiles.WrongAnswer)}
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
             {showTryAgainButton && (

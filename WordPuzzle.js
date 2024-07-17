@@ -13,7 +13,7 @@ import {
 import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { globalAudioFIles, playSound } from "./audio";
+import { globalAudioFiles, playSound } from "./audio";
 
 const {width} = Dimensions.get('window'); // Get device screen width
 
@@ -158,7 +158,7 @@ const WordPuzzle = ({
           const newDraggableBorderStyles = [...draggableBorderStyles];
           newDraggableBorderStyles[index] = 'solid';
           setDraggableBorderStyles(newDraggableBorderStyles);
-          playSound(globalAudioFIles.dropSound);
+          playSound(globalAudioFiles.dropSound);
           Animated.spring(draggable.pan, {
             toValue: {
               x: inputBoxesRef[dropAreaIndex].x - 30,
@@ -171,7 +171,7 @@ const WordPuzzle = ({
             toValue: initialPositions[index],
             useNativeDriver: false,
           }).start(() => {
-            playSound(globalAudioFIles.dropSound);
+            playSound(globalAudioFiles.dropSound);
             const newColors = [...inputBoxColors];
             newColors.fill('black');
             setInputBoxColors(newColors);
