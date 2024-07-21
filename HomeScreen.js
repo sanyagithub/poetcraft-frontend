@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Button, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+} from 'react-native';
 import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
 
@@ -8,6 +15,7 @@ export default function HomeScreen({navigation}) {
     <GradientBackground>
       <View style={commonStyles.container}>
         <Text style={styles.heading}>Discover the Rhythm of Poetry</Text>
+        <Image style={styles.imageStyle} source={require('./images/welcome.gif')} />
         <Text style={styles.description}>
           Unlock the secrets of meter and bring your poetry to life!
         </Text>
@@ -68,5 +76,9 @@ const styles = StyleSheet.create({
   },
   identifyButton: {
     backgroundColor: '#F5D867', // Identify button color
+  },
+  imageStyle: {
+    width: 300,
+    height: 250,
   },
 });

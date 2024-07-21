@@ -5,19 +5,10 @@ import Login from './Login';
 import RegisterScreen from './RegisterScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Courses from './Courses';
-import Modules from './Modules';
-import QuestionFlow from './QuestionFlow';
-import QuestionRenderer from './QuestionRenderer';
-import CompletionScreen from './CompletionScreen';
-import HomeScreen from './HomeScreen';
-import AwardsScreen from './AwardsScreen';
-import SyllableCheckerScreen from './SyllableCheckerScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MainTabs from './MainTabs';
 import ResetPasswordScreen from './ResetPasswordScreen';
 import UpdatePasswordScreen from './UpdatePasswordScreen';
+import ChangePasswordScreen from './ChangePasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,6 +36,10 @@ const App = () => {
         <Stack.Screen
           name="ResetPasswordScreen"
           component={ResetPasswordScreen}
+        />
+        <Stack.Screen
+          name="ChangePasswordScreen"
+          component={ChangePasswordScreen}
         />
         <Stack.Screen
           name="UpdatePasswordScreen"

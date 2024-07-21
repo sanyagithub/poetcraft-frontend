@@ -94,11 +94,14 @@ const QuestionFlow = ({route}) => {
           {
             type: 'CONTENT',
             heading: 'Symbols for Stressed and Unstressed Syllables\n',
-            text:
-              'In scansion, we use specific symbols to mark stressed and unstressed syllables:\n' +
-              '\n' +
-              "WAND ( / ): Represents a stressed syllable, also known as an accent, stress, or ictus. Sometimes referred to as a macron (which actually means 'long syllable').\n\n" +
-              "CUP ( u ): Represents an unstressed syllable, also known as unstress, nonictus, or breve (which actually means 'short syllable').",
+            text: (
+              <Text>
+                In scansion, we use specific symbols to mark stressed and unstressed syllables:{'\n'}
+                {'\n'}
+                WAND ( / ): Represents a <Text style={{ fontWeight: 'bold' }}>stressed syllable</Text>, also known as an accent, stress, or ictus. Sometimes referred to as a macron (which actually means 'long syllable').{'\n\n'}
+                CUP ( u ): Represents an <Text style={{ fontWeight: 'bold' }}>unstressed syllable</Text>, also known as unstress, nonictus, or breve (which actually means 'short syllable').
+              </Text>
+            ),
           },
           {
             type: 'CONTENT',
@@ -185,11 +188,11 @@ const QuestionFlow = ({route}) => {
             text:
               'Here are the basic five types of metrical feet, also known as meters:\n' +
               '\n' +
-              '\nTrochee ( /u ): A stressed syllable followed by an unstressed syllable.\n' +
-              '\nIamb ( u/ ): An unstressed syllable followed by a stressed syllable.\n' +
-              '\nDactyl ( /uu ): A stressed syllable followed by two unstressed syllables.\n' +
-              '\nAnapest ( uu/ ): Two unstressed syllables followed by a stressed syllable.\n' +
-              '\nAmphibrach ( u/u ): An unstressed syllable, followed by a stressed syllable, and then an unstressed syllable.\n' +
+              '\nTrochee ( /u ): A stressed syllable( / ) followed by an unstressed syllable( u ).\n' +
+              '\nIamb ( u/ ): An unstressed syllable( u ) followed by a stressed syllable( / ) .\n' +
+              '\nDactyl ( /uu ): A stressed syllable( / ) followed by two unstressed syllables( u ).\n' +
+              '\nAnapest ( uu/ ): Two unstressed syllables( uu ) followed by a stressed syllable( / ).\n' +
+              '\nAmphibrach ( u/u ): An unstressed syllable( u ), followed by a stressed syllable( / ), and then an unstressed syllable( u ).\n' +
               '\n',
           },
           ...questions.slice(2),

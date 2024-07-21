@@ -6,6 +6,9 @@ import {
   TextInput,
   Pressable,
   StyleSheet,
+  Platform,
+  ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import commonStyles from './commonStyles';
 import GradientBackground from './GradientBackground';
@@ -41,7 +44,7 @@ const ResetPasswordScreen = ({navigation}) => {
     console.log('email:', email);
     try {
       await resetPassword(email);
-      navigation.navigate('Login');
+      navigation.navigate('ChangePasswordScreen', {email});
       console.log('Reset password email sent');
     } catch (error) {
       console.error('Reset password failed:', error);
@@ -54,28 +57,36 @@ const ResetPasswordScreen = ({navigation}) => {
 
   return (
     <GradientBackground>
-      <View style={commonStyles.container}>
-        <Image
-          source={require('./images/login.png')} // Replace with the path to your image file
-          style={styles.image}
-        />
-        <Text style={styles.text_title}>Reset Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Pressable style={commonStyles.buttonContainer} onPress={handleResetPassword}>
-          <Text style={commonStyles.buttonTitle}>Send Reset Link</Text>
-        </Pressable>
-        <Text style={styles.text_login}>
-          Remembered your password?{' '}
-          <Text style={styles.linkText} onPress={goToLogin}>
-            Log In
-          </Text>
-        </Text>
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <View style={commonStyles.container}>
+            <Image
+              source={require('./images/login.png')} // Replace with the path to your image file
+              style={styles.image}
+            />
+            <Text style={styles.text_title}>Reset Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <Pressable
+              style={commonStyles.buttonContainer}
+              onPress={handleResetPassword}>
+              <Text style={commonStyles.buttonTitle}>Send Reset Link</Text>
+            </Pressable>
+            <Text style={styles.text_login}>
+              Remembered your password?{' '}
+              <Text style={styles.linkText} onPress={goToLogin}>
+                Log In
+              </Text>
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </GradientBackground>
   );
 };

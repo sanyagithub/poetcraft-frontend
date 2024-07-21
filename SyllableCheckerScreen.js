@@ -28,7 +28,7 @@ export default class SyllableCheckerScreen extends Component {
     }
 
     axios
-      .get('http://localhost:8080/' + this.state.word.toLowerCase())
+      .get('http://localhost:8080/api/auth/' + this.state.word.toLowerCase())
       .then(response => {
         this.setState({syllables: response.data, error: ''});
       })
@@ -39,11 +39,18 @@ export default class SyllableCheckerScreen extends Component {
 
   renderSyllable = ({item}) => {
     const stressedStyle =
-      item.stress === 'true'
+      item.type === 'stress'
         ? styles.stressedSyllableText
+        : item.type === 'secondary stress'
+        ? styles.secondaryStressSyllableText
         : styles.unstressedSyllableText;
+
     const isStressed =
-      item.stress === 'true' ? 'is stressed' : 'is NOT stressed';
+      item.type === 'stress'
+        ? '( / ) is stressed'
+        : item.type === 'secondary stress'
+        ? '( \\ ) is secondary stressed'
+        : '( u ) is unstressed';
 
     return (
       <View style={styles.syllableContainer}>
@@ -58,7 +65,7 @@ export default class SyllableCheckerScreen extends Component {
     return (
       <GradientBackground>
         <View style={commonStyles.container}>
-          <Text style={styles.header}>Syllable Stress Checker</Text>
+          <Text style={styles.header}>Check the stress levels of syllables in a word</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter the word..."
@@ -93,10 +100,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    fontSize: 30,
+    fontSize: 25,
     textAlign: 'center',
+    marginTop: 30,
     marginBottom: 20,
-    color: '#4B0082',
+    color: 'black',
     fontWeight: 'bold',
   },
   input: {
@@ -135,18 +143,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#cccccc',
+    borderWidth: 2,
+    borderColor: 'black',
   },
   stressedSyllableText: {
     fontSize: 18,
-    color: '#ff0000',
+    color: '#9AAB63',
     fontWeight: 'bold',
   },
   unstressedSyllableText: {
     fontSize: 18,
-    color: '#0000ff',
-    fontWeight: 'bold',
+    color: '#9AAB63',
+    fontWeight: '400',
+  },
+  secondaryStressSyllableText: {
+    fontSize: 18,
+    color: '#9AAB63',
+    fontWeight: '600',
   },
   customButtonContainer: {
     margin: 30, // Add padding here
