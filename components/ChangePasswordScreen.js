@@ -11,7 +11,8 @@ import {
   ScrollView,
 } from 'react-native';
 import GradientBackground from './GradientBackground';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
+import {API_BASE_URL} from './Global';
 
 const validatePassword = password => {
   return password.length >= 8; // Example validation rule: password must be at least 8 characters long
@@ -20,7 +21,7 @@ const validatePassword = password => {
 const changePassword = async (email, currentPassword, newPassword) => {
   try {
     const response = await fetch(
-      'http://localhost:8080/api/auth/verifyAndResetPassword?email=' +
+      `${API_BASE_URL}/api/auth/verifyAndResetPassword?email=` +
         email +
         '&tempPassword=' +
         currentPassword +
@@ -88,13 +89,14 @@ const ChangePasswordScreen = ({navigation, route}) => {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={commonStyles.container}>
             <Image
-              source={require('./images/login.png')}
+              source={require('../images/login.png')}
               style={styles.image}
             />
             <Text style={styles.textTitle}>Change Password</Text>
             <TextInput
               style={styles.input}
               placeholder="Temporary Password"
+              autoCapitalize="none"
               secureTextEntry
               value={currentPassword}
               onChangeText={setCurrentPassword}
@@ -102,6 +104,7 @@ const ChangePasswordScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               placeholder="New Password"
+              autoCapitalize="none"
               secureTextEntry
               value={newPassword}
               onChangeText={setNewPassword}
@@ -109,6 +112,7 @@ const ChangePasswordScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               placeholder="Confirm New Password"
+              autoCapitalize="none"
               secureTextEntry
               value={confirmPassword}
               onChangeText={setConfirmPassword}

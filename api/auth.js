@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { API_BASE_URL } from "../components/Global";
 
 // Save token
 export const saveToken = async token => {
@@ -29,7 +30,7 @@ export const checkAuthentication = async () => {
 
   try {
     const response = await axios.post(
-      'http://localhost:8080/api/auth/validate-token',
+      `${API_BASE_URL}/api/auth/validate-token`,
       {token: token},
     );
     return response.data.valid; // Assumes the backend responds with a JSON object containing a 'valid' boolean field

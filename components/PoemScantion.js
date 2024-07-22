@@ -11,11 +11,11 @@ import {
   Animated,
 } from 'react-native';
 import Sound from 'react-native-sound';
-import {getPoem} from './api';
-import commonStyles from './commonStyles';
+import {getPoem} from '../api/api';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFiles, playSound } from "./audio";
+import { audioFiles, globalAudioFiles, playSound } from "../api/audio";
 
 const PoemScansion = ({
   poemId,
@@ -288,7 +288,7 @@ const PoemScansion = ({
                             toggleLineVisibility(lineIndex, syllableIndex);
                           }}>
                           <Image
-                            source={require('./images/hand.png')}
+                            source={require('../images/hand.png')}
                             style={styles.handImage}
                           />
                         </TouchableOpacity>
@@ -325,7 +325,7 @@ const PoemScansion = ({
             <Text style={styles.poemText}>{poemText}</Text>
             <TouchableOpacity onPress={() => playSound(globalAudioFiles[audioFile])}>
               <Image
-                source={require('./images/listenbtn.png')}
+                source={require('../images/listenbtn.png')}
                 style={styles.audio_image}
               />
             </TouchableOpacity>
@@ -336,14 +336,14 @@ const PoemScansion = ({
         {currentStep > 1 && (
           <TouchableOpacity onPress={handleBack}>
             <Image
-              source={require('./images/backbtn.png')}
+              source={require('../images/backbtn.png')}
               style={styles.goBackIcon}
             />
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={() => setPoemModalVisible(true)}>
           <Image
-            source={require('./images/infobtn.png')}
+            source={require('../images/infobtn.png')}
             style={styles.showPoemIcon}
           />
         </TouchableOpacity>

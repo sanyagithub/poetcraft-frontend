@@ -8,7 +8,7 @@ import {
   Animated,
   Modal,
 } from 'react-native';
-import { globalAudioFiles, playSound } from "./audio";
+import { globalAudioFiles, playSound } from "../api/audio";
 
 const AnswerFeedbackModal = ({
   isVisible,
@@ -36,7 +36,7 @@ const AnswerFeedbackModal = ({
             {showTryAgainButton && (
               <View style={styles.explanationModalView}>
                 <Image
-                  source={require('./images/Reading.gif')}
+                  source={require('../images/Reading.gif')}
                   style={styles.image}
                 />
                 <Text style={styles.explanationText}>{explanation}</Text>
@@ -46,8 +46,8 @@ const AnswerFeedbackModal = ({
               <Animated.Image
                 source={
                   isAnswerCorrect
-                    ? require('./images/greatwork.png')
-                    : require('./images/oops.png')
+                    ? require('../images/greatwork.png')
+                    : require('../images/oops.png')
                 }
                 style={
                   isAnswerCorrect

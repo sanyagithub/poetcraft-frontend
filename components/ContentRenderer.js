@@ -10,7 +10,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 import HeartbeatLine from './HeartbeatLine';
 
@@ -47,7 +47,7 @@ const FadeInView = props => {
 const ContentRenderer = ({content, handleNextQuestion}) => {
   return (
     <View>
-      <Image source={require('./images/Reading.gif')} style={styles.image} />
+      <Image source={require('../images/Reading.gif')} style={styles.image} />
       <ScrollView style={styles.scrollView}>
         <Text style={styles.heading}>{content.heading}</Text>
         <FadeInView>

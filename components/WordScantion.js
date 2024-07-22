@@ -11,10 +11,10 @@ import {
   Modal,
 } from 'react-native';
 import Sound from 'react-native-sound';
-import {getAudio} from './api';
-import commonStyles from './commonStyles';
+import {getAudio} from '../api/api';
+import commonStyles from '../styles/commonStyles';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import {globalAudioFiles, playSound} from './audio';
+import {globalAudioFiles, playSound} from '../api/audio';
 
 // Main function component for Poem Scansion
 const WordScantion = ({
@@ -155,7 +155,7 @@ const WordScantion = ({
         {currentStep > 1 && (
           <TouchableOpacity onPress={handleBack}>
             <Image
-              source={require('./images/backbtn.png')}
+              source={require('../images/backbtn.png')}
               style={styles.goBackIcon}
             />
           </TouchableOpacity>
@@ -181,7 +181,7 @@ const WordScantion = ({
               <TouchableOpacity
                 onPress={() => playSound(globalAudioFiles[audioFile])}>
                 <Image
-                  source={require('./images/listenbtn.png')}
+                  source={require('../images/listenbtn.png')}
                   style={styles.audio_image}
                 />
               </TouchableOpacity>

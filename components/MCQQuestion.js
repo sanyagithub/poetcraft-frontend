@@ -9,10 +9,10 @@ import {
   Modal,
   ImageBackground,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFiles, playSound } from "./audio";
+import { audioFiles, globalAudioFiles, playSound } from "../api/audio";
 
 const MCQQuestion = ({
   question,
@@ -92,8 +92,8 @@ const MCQQuestion = ({
         <ImageBackground
           source={
             selectedAnswer === answer
-              ? require('./images/answerOptionSelected.png')
-              : require('./images/answerOptionUnselected.png')
+              ? require('../images/answerOptionSelected.png')
+              : require('../images/answerOptionUnselected.png')
           }
           style={styles.buttonImage}>
           <Text style={[styles.answerText, {fontSize}]}>{answer}</Text>

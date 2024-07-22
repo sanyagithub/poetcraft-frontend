@@ -7,7 +7,7 @@ import {
   Text,
   Image,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 export default function HomeScreen({navigation}) {
@@ -15,7 +15,7 @@ export default function HomeScreen({navigation}) {
     <GradientBackground>
       <View style={commonStyles.container}>
         <Text style={styles.heading}>Discover the Rhythm of Poetry</Text>
-        <Image style={styles.imageStyle} source={require('./images/welcome.gif')} />
+        <Image style={styles.imageStyle} source={require('../images/welcome.gif')} />
         <Text style={styles.description}>
           Unlock the secrets of meter and bring your poetry to life!
         </Text>

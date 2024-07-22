@@ -8,8 +8,9 @@ import {
   FlatList,
 } from 'react-native';
 import axios from 'axios';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
+import { API_BASE_URL } from "./Global";
 
 export default class SyllableCheckerScreen extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class SyllableCheckerScreen extends Component {
     }
 
     axios
-      .get('http://localhost:8080/api/auth/' + this.state.word.toLowerCase())
+      .get(`${API_BASE_URL}/api/auth/word/` + this.state.word.toLowerCase())
       .then(response => {
         this.setState({syllables: response.data, error: ''});
       })
@@ -67,6 +68,7 @@ export default class SyllableCheckerScreen extends Component {
         <View style={commonStyles.container}>
           <Text style={styles.header}>Check the stress levels of syllables in a word</Text>
           <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholder="Enter the word..."
             onChangeText={text => {

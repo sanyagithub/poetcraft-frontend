@@ -3,11 +3,11 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet, Text} from 'react-native';
 import QuestionRenderer from './QuestionRenderer';
-import {addAward, getQuestions, updateUserProgress} from './api';
+import {addAward, getQuestions, updateUserProgress} from '../api/api';
 import {useNavigation} from '@react-navigation/native';
 import Courses from './Courses';
 import ContentRenderer from './ContentRenderer';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 const QuestionFlow = ({route}) => {

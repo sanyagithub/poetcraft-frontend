@@ -8,11 +8,12 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
+import {API_BASE_URL} from './Global';
 const registerUser = async (email, password) => {
   try {
-    const response = await fetch('http://localhost:8080/api/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const RegisterScreen = ({navigation}) => {
     <GradientBackground>
       <View style={commonStyles.container}>
         <Image
-          source={require('./images/registration.png')} // Replace with the path to your image file
+          source={require('../images/registration.png')} // Replace with the path to your image file
           style={styles.image}
         />
         <Text style={styles.text_title}>Create New Account</Text>
@@ -71,12 +72,14 @@ const RegisterScreen = ({navigation}) => {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
+          autoCapitalize="none"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -84,11 +87,14 @@ const RegisterScreen = ({navigation}) => {
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
+          autoCapitalize="none"
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <Pressable style={commonStyles.buttonContainer} onPress={handleRegister}>
+        <Pressable
+          style={commonStyles.buttonContainer}
+          onPress={handleRegister}>
           <Text style={commonStyles.buttonTitle}>Sign Up</Text>
         </Pressable>
       </View>
@@ -109,8 +115,8 @@ const styles = StyleSheet.create({
     borderColor: '#DDB1E4',
     borderWidth: 3,
     fontSize: 18,
-   // marginLeft: 25,
-  //  marginRight: 25,
+    // marginLeft: 25,
+    //  marginRight: 25,
   },
   buttonContainer: {
     marginBottom: 25,

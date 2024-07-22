@@ -1,7 +1,7 @@
 import axios from 'axios';
-import {getToken} from './auth'; // assuming auth.js contains the token handling logic
+import {getToken} from './auth';
+import { API_BASE_URL } from '../components/Global'; // assuming auth.js contains the token handling logic
 
-const API_BASE_URL = 'http://localhost:8080'; // Replace with your actual API endpoint
 
 // Helper function to get headers
 const getHeaders = async () => {
@@ -180,7 +180,7 @@ export const addAward = async (
   try {
     const headers = await getHeaders();
     const response = await axios.post(
-      '${API_BASE_URL}/api/awards',
+      `${API_BASE_URL}/api/awards`,
       {
         email,
         courseId,

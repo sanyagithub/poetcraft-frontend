@@ -7,10 +7,10 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {getCourses, getUserProgress} from './api';
+import {getCourses, getUserProgress} from '../api/api';
 import {useNavigation} from '@react-navigation/native';
-import {getEmail} from './auth';
-import commonStyles from './commonStyles';
+import {getEmail} from '../api/auth';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 const CourseButton = ({course, progress, onPress}) => {
@@ -65,7 +65,7 @@ const Courses = () => {
       <View style={commonStyles.container}>
         <Text style={styles.text_title}>COURSES</Text>
         <Image
-          source={require('./images/heartline.png')}
+          source={require('../images/heartline.png')}
           style={styles.heartlineimage}
         />
         <FlatList

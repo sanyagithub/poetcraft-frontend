@@ -37,13 +37,11 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
 	</dict>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We need access to the microphone for playing audio files.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to the microphone for playing audio files.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>fonts/Boleh.ttf</string>

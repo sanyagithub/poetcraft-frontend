@@ -1,10 +1,10 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {Image, Text, View, StyleSheet, Animated} from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
-import {checkAuthentication} from './auth'; // Ensure the path is correct
+import {checkAuthentication} from '../api/auth'; // Ensure the path is correct
 import {useNavigation} from '@react-navigation/native';
-import {globalAudioFiles, playSound} from './audio';
+import {globalAudioFiles, playSound} from '../api/audio';
 
 const SplashScreen = () => {
   const navigation = useNavigation(); // Use useNavigation hook
@@ -89,12 +89,32 @@ const SplashScreen = () => {
     };
   }, [scaleValue]);
 
+  // useEffect(() => {
+  //   const testEC2Access = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         'http://jsonplaceholder.typicode.com/todos/1',
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       const data = await response.text();
+  //       setEc2Status(`EC2 response: ${data}`);
+  //     } catch (error) {
+  //       console.log(error);
+  //       setEc2Status(`EC2 access error: ${error}`);
+  //     }
+  //   };
+  //
+  //   testEC2Access();
+  // }, []);
+
   return (
     <GradientBackground>
       <View style={commonStyles.container}>
         <Animated.View
           style={[styles.container, {transform: [{scale: scaleValue}]}]}>
-          <Image source={require('./images/heart.png')} style={styles.image} />
+          <Image source={require('../images/heart.png')} style={styles.image} />
         </Animated.View>
         <Text style={styles.text_title}>A Beating Heart</Text>
         <Text style={styles.text_title}>The Poet's Craft</Text>

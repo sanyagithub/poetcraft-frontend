@@ -10,21 +10,19 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
+import {API_BASE_URL} from './Global';
 
 const resetPassword = async email => {
   try {
-    const response = await fetch(
-      'http://localhost:8080/api/auth/reset-password',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email: email}),
+    const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({email: email}),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -63,11 +61,12 @@ const ResetPasswordScreen = ({navigation}) => {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={commonStyles.container}>
             <Image
-              source={require('./images/login.png')} // Replace with the path to your image file
+              source={require('../images/login.png')} // Replace with the path to your image file
               style={styles.image}
             />
             <Text style={styles.text_title}>Reset Password</Text>
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
               placeholder="Email"
               value={email}

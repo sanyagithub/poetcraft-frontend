@@ -1,21 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
+import {API_BASE_URL} from './Global';
 
 const updatePassword = async (token, newPassword) => {
   try {
-    const response = await fetch(
-      'http://localhost:8080/api/auth/update-password',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({token, newPassword}),
+    const response = await fetch(`${API_BASE_URL}/api/auth/update-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({token, newPassword}),
+    });
 
     const data = await response.json();
     if (!response.ok) {
@@ -55,6 +53,7 @@ const UpdatePasswordScreen = () => {
         <Text style={styles.text_title}>Reset Password</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize="none"
           placeholder="New Password"
           secureTextEntry
           value={newPassword}

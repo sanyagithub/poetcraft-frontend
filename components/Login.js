@@ -11,9 +11,10 @@ import {
   ScrollView,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import {saveToken, saveEmail} from './auth';
+import {saveToken, saveEmail} from '../api/auth';
 import GradientBackground from './GradientBackground';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
+import {API_BASE_URL} from './Global';
 
 const validateEmail = email => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,8 +22,9 @@ const validateEmail = email => {
 };
 
 const loginUser = async (email, password) => {
+ // console.log(`${API_BASE_URL}/api/auth/login`);
   try {
-    const response = await fetch('http://localhost:8080/api/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,10 +37,12 @@ const loginUser = async (email, password) => {
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.log('error', errorData);
       throw new Error(errorData.message || 'Login failed');
     }
 
     const data = await response.json();
+   // console.log(data);
     await saveToken(data.token);
     await saveEmail(email);
     return data;
@@ -49,7 +53,7 @@ const loginUser = async (email, password) => {
 
 const sendOtp = async phoneNumber => {
   try {
-    const response = await fetch('http://localhost:8080/api/auth/send-otp', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +75,7 @@ const sendOtp = async phoneNumber => {
 const verifyOtp = async (phoneNumber, otp) => {
   try {
     console.log('I am here');
-    const response = await fetch('http://localhost:8080/api/auth/verify-otp', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -380,7 +384,7 @@ const Login = ({navigation}) => {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={commonStyles.container}>
             <Image
-              source={require('./images/login.png')}
+              source={require('../images/login.png')}
               style={styles.image}
             />
             <Text style={styles.textTitle}>Login</Text>
@@ -407,12 +411,14 @@ const Login = ({navigation}) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
+                  autoCapitalize="none"
                   value={email}
                   onChangeText={setEmail}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
+                  autoCapitalize="none"
                   secureTextEntry
                   value={password}
                   onChangeText={setPassword}
@@ -441,6 +447,7 @@ const Login = ({navigation}) => {
                   />
                   <TextInput
                     style={styles.phoneInput}
+                    autoCapitalize="none"
                     placeholder="Phone Number"
                     value={phoneNumber}
                     onChangeText={setPhoneNumber}
@@ -450,6 +457,7 @@ const Login = ({navigation}) => {
                 {isOtpSent && (
                   <TextInput
                     style={styles.input}
+                    autoCapitalize="none"
                     placeholder="OTP"
                     value={otp}
                     onChangeText={setOtp}

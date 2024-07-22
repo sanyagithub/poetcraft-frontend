@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import Module1Image from './images/Scansion_Scholar.png';
-import Module2Image from './images/Syllable_Savant.png';
-import Module3Image from './images/Scansion_Sensei.png';
-import Module4Image from './images/Metrical_Master.png';
-import Module5Image from './images/Scansion_Sleuth.png';
-import { globalAudioFiles, playSound } from "./audio";
+import Module1Image from '../images/Scansion_Scholar.png';
+import Module2Image from '../images/Syllable_Savant.png';
+import Module3Image from '../images/Scansion_Sensei.png';
+import Module4Image from '../images/Metrical_Master.png';
+import Module5Image from '../images/Scansion_Sleuth.png';
+import { globalAudioFiles, playSound } from "../api/audio";
 import GradientBackground from './GradientBackground';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 
 const getModuleImage = moduleId => {
   switch (moduleId) {

@@ -8,20 +8,20 @@ import {
   FlatList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {getEmail} from './auth';
+import {getEmail} from '../api/auth';
 import {
   getModules,
   getModuleProgress,
   getLastQuestionAnswered,
   getTotalQuestions,
-} from './api';
+} from '../api/api';
 
-import Module1Image from './images/Scansion_Scholar.png';
-import Module2Image from './images/Syllable_Savant.png';
-import Module3Image from './images/Scansion_Sensei.png';
-import Module4Image from './images/Metrical_Master.png';
-import Module5Image from './images/Scansion_Sleuth.png';
-import commonStyles from './commonStyles';
+import Module1Image from '../images/Scansion_Scholar.png';
+import Module2Image from '../images/Syllable_Savant.png';
+import Module3Image from '../images/Scansion_Sensei.png';
+import Module4Image from '../images/Metrical_Master.png';
+import Module5Image from '../images/Scansion_Sleuth.png';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 const getModuleImage = moduleId => {

@@ -10,10 +10,10 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import commonStyles from './commonStyles';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { globalAudioFiles, playSound } from "./audio";
+import { globalAudioFiles, playSound } from "../api/audio";
 
 const {width} = Dimensions.get('window'); // Get device screen width
 

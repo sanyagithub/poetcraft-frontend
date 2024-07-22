@@ -6,7 +6,7 @@ const HeartbeatLine = () => {
     <View style={styles.container}>
       <View style={styles.lineContainer}>
         <View style={[styles.line, styles.leftLine]} />
-        <Image source={require('./images/heartline.png')} style={styles.heartbeat} />
+        <Image source={require('../images/heartline.png')} style={styles.heartbeat} />
         <View style={[styles.line, styles.rightLine]} />
       </View>
     </View>

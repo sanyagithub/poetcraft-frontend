@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from "react-native";
 import {useNavigation} from '@react-navigation/native';
-import {getEmail} from './auth';
+import {getEmail} from '../api/auth';
 import {
   getLastQuestionAnswered,
   getModuleProgress,
   getModules,
   getTotalQuestions,
-} from './api';
-import commonStyles from './commonStyles';
+} from '../api/api';
+import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 const ModuleButton = ({module, progress, onPress}) => {
@@ -84,7 +84,7 @@ const Modules = ({route}) => {
       <View style={commonStyles.container}>
         <Text style={styles.text_title}>MODULES</Text>
         <Image
-          source={require('./images/heartline.png')}
+          source={require('../images/heartline.png')}
           style={styles.heartlineimage}
         />
         <FlatList
