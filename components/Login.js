@@ -22,7 +22,7 @@ const validateEmail = email => {
 };
 
 const loginUser = async (email, password) => {
- // console.log(`${API_BASE_URL}/api/auth/login`);
+  // console.log(`${API_BASE_URL}/api/auth/login`);
   try {
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
@@ -42,7 +42,7 @@ const loginUser = async (email, password) => {
     }
 
     const data = await response.json();
-   // console.log(data);
+    // console.log(data);
     await saveToken(data.token);
     await saveEmail(email);
     return data;

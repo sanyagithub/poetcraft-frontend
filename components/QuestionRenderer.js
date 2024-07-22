@@ -31,7 +31,6 @@ const QuestionRenderer = ({question, handleNextQuestion}) => {
   const [userInput, setUserInput] = useState([]);
   const [feedback, setFeedback] = useState([]);
 
-
   useEffect(() => {
     console.log('useEffect is running');
     if (question.type === 'MCQ' && question.options) {

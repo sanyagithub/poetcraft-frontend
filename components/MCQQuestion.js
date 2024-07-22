@@ -9,10 +9,8 @@ import {
   Modal,
   ImageBackground,
 } from 'react-native';
-import commonStyles from '../styles/commonStyles';
-import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFiles, playSound } from "../api/audio";
+import {audioFiles, globalAudioFiles, playSound} from '../api/audio';
 
 const MCQQuestion = ({
   question,

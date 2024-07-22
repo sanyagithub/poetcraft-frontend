@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
-import { API_BASE_URL } from "./Global";
+import {API_BASE_URL} from './Global';
 
 export default class SyllableCheckerScreen extends Component {
   constructor(props) {
@@ -66,7 +66,9 @@ export default class SyllableCheckerScreen extends Component {
     return (
       <GradientBackground>
         <View style={commonStyles.container}>
-          <Text style={styles.header}>Check the stress levels of syllables in a word</Text>
+          <Text style={styles.header}>
+            Check the stress levels of syllables in a word
+          </Text>
           <TextInput
             autoCapitalize="none"
             style={styles.input}

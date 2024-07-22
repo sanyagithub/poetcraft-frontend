@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from 'react';
 import {Image, Text, View, StyleSheet, Animated} from 'react-native';
 import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';

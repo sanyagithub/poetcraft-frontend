@@ -13,8 +13,8 @@ import {
   getModules,
   getModuleProgress,
   getLastQuestionAnswered,
-  getTotalQuestions,
-} from '../api/api';
+  getTotalQuestions, getAwardsByEmail,
+} from "../api/api";
 
 import Module1Image from '../images/Scansion_Scholar.png';
 import Module2Image from '../images/Syllable_Savant.png';

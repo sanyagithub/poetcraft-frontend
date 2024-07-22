@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {getEmail} from '../api/auth';
 import {
@@ -111,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     alignContent: 'center',
-   // marginLeft: 25,
+    // marginLeft: 25,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,

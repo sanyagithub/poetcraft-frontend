@@ -8,7 +8,7 @@ import {
   Animated,
   Modal,
 } from 'react-native';
-import { globalAudioFiles, playSound } from "../api/audio";
+import {globalAudioFiles, playSound} from '../api/audio';
 
 const AnswerFeedbackModal = ({
   isVisible,
@@ -20,7 +20,6 @@ const AnswerFeedbackModal = ({
   handleTryAgainButtonClick,
   closeModal,
 }) => {
-
   return (
     <>
       <Modal

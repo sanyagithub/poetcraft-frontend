@@ -8,14 +8,11 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  Animated,
 } from 'react-native';
-import Sound from 'react-native-sound';
 import {getPoem} from '../api/api';
 import commonStyles from '../styles/commonStyles';
-import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { audioFiles, globalAudioFiles, playSound } from "../api/audio";
+import {audioFiles, globalAudioFiles, playSound} from '../api/audio';
 
 const PoemScansion = ({
   poemId,
@@ -323,7 +320,8 @@ const PoemScansion = ({
               <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
             <Text style={styles.poemText}>{poemText}</Text>
-            <TouchableOpacity onPress={() => playSound(globalAudioFiles[audioFile])}>
+            <TouchableOpacity
+              onPress={() => playSound(globalAudioFiles[audioFile])}>
               <Image
                 source={require('../images/listenbtn.png')}
                 style={styles.audio_image}

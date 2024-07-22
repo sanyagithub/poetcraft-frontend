@@ -11,9 +11,8 @@ import {
   Modal,
 } from 'react-native';
 import commonStyles from '../styles/commonStyles';
-import GradientBackground from './GradientBackground';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
-import { globalAudioFiles, playSound } from "../api/audio";
+import {globalAudioFiles, playSound} from '../api/audio';
 
 const {width} = Dimensions.get('window'); // Get device screen width
 
@@ -225,7 +224,6 @@ const WordPuzzle = ({
     newDraggableBorderStyles.fill('dashed');
     setDraggableBorderStyles(newDraggableBorderStyles);
 
-
     handleNextQuestion();
     // Additional logic for moving to the next question
   };
@@ -275,7 +273,9 @@ const WordPuzzle = ({
       ))}
 
       {showSubmitButton && (
-        <TouchableOpacity style={commonStyles.buttonContainer} onPress={handleSubmit}>
+        <TouchableOpacity
+          style={commonStyles.buttonContainer}
+          onPress={handleSubmit}>
           <Text style={commonStyles.buttonTitle}>Submit</Text>
         </TouchableOpacity>
       )}

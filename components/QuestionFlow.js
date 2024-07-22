@@ -16,9 +16,13 @@ const QuestionFlow = ({route}) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const navigation = useNavigation();
+  console.log('last', lastQuestion);
 
   useEffect(() => {
+
+
     async function fetchData() {
+      console.log('last', lastQuestion);
       setCurrentQuestionIndex(lastQuestion + 1);
       // console.log(moduleId);
       const questions = await getQuestions(moduleId);
@@ -26,7 +30,6 @@ const QuestionFlow = ({route}) => {
       //setQuestions(questions);
       // const combinedItems = [];
       if (moduleId === 1) {
-        console.log('I am in module 1');
         setQuestions([
           {
             type: 'CONTENT',
@@ -96,10 +99,17 @@ const QuestionFlow = ({route}) => {
             heading: 'Symbols for Stressed and Unstressed Syllables\n',
             text: (
               <Text>
-                In scansion, we use specific symbols to mark stressed and unstressed syllables:{'\n'}
+                In scansion, we use specific symbols to mark stressed and
+                unstressed syllables:{'\n'}
                 {'\n'}
-                WAND ( / ): Represents a <Text style={{ fontWeight: 'bold' }}>stressed syllable</Text>, also known as an accent, stress, or ictus. Sometimes referred to as a macron (which actually means 'long syllable').{'\n\n'}
-                CUP ( u ): Represents an <Text style={{ fontWeight: 'bold' }}>unstressed syllable</Text>, also known as unstress, nonictus, or breve (which actually means 'short syllable').
+                WAND ( / ): Represents a{' '}
+                <Text style={{fontWeight: 'bold'}}>stressed syllable</Text>,
+                also known as an accent, stress, or ictus. Sometimes referred to
+                as a macron (which actually means 'long syllable').{'\n\n'}
+                CUP ( u ): Represents an{' '}
+                <Text style={{fontWeight: 'bold'}}>unstressed syllable</Text>,
+                also known as unstress, nonictus, or breve (which actually means
+                'short syllable').
               </Text>
             ),
           },
@@ -174,6 +184,7 @@ const QuestionFlow = ({route}) => {
 
       if (moduleId === 4) {
         setQuestions([
+          {},
           ...questions.slice(0, 2),
           {
             type: 'CONTENT',

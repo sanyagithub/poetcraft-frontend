@@ -11,8 +11,6 @@ import {
   ScrollView,
 } from 'react-native';
 import commonStyles from '../styles/commonStyles';
-import GradientBackground from './GradientBackground';
-import HeartbeatLine from './HeartbeatLine';
 
 const FadeInView = props => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
@@ -76,7 +74,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#f8f9fa',
     alignItems: 'center',
   },
   image: {

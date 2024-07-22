@@ -6,7 +6,7 @@ import Module2Image from '../images/Syllable_Savant.png';
 import Module3Image from '../images/Scansion_Sensei.png';
 import Module4Image from '../images/Metrical_Master.png';
 import Module5Image from '../images/Scansion_Sleuth.png';
-import { globalAudioFiles, playSound } from "../api/audio";
+import {globalAudioFiles, playSound} from '../api/audio';
 import GradientBackground from './GradientBackground';
 import commonStyles from '../styles/commonStyles';
 
