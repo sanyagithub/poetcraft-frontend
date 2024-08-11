@@ -34,25 +34,36 @@ const CompletionScreen = ({route}) => {
   const moduleImage = getModuleImage(moduleId);
 
   useEffect(() => {
-    // Play the sound when the component mounts
-    playSound(globalAudioFiles.wee); // Replace with the actual filename of your sound
+    try {
+      playSound(globalAudioFiles.wee);
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  }, []);
 
-    // Cleanup function if necessary
-    return () => {
-      // Any cleanup code if needed
-    };
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  const handleNextModule = () => {
+    try {
+      navigation.navigate('Modules', {courseId});
+    } catch (error) {
+      console.error('Navigation error:', error);
+      alert('Something went wrong. Please try again.');
+    }
+  };
 
   return (
     <GradientBackground>
       <View style={[commonStyles.container, commonStyles.centerContent]}>
-        <Text style={styles.congratulationsText}>Congratulations!</Text>
-        <Text style={styles.messageText}>You have completed this module.</Text>
-        <Image source={moduleImage} style={styles.moduleImage} />
+        <Text style={styles.congratulationsText}>Well Done!</Text>
+        <Text style={styles.messageText}>
+          You've successfully completed this module. Ready for the next challenge?
+        </Text>
+        <Image source={moduleImage} style={styles.moduleImage} testID="moduleImage" />
         <TouchableOpacity
-          style={commonStyles.buttonContainer}
-          onPress={() => navigation.navigate('Modules', {courseId})}>
-          <Text style={commonStyles.buttonTitle}>Next Module</Text>
+          style={[commonStyles.buttonContainer, styles.nextModuleButton]}
+          onPress={handleNextModule}
+          activeOpacity={0.7}
+        >
+          <Text style={commonStyles.buttonTitle}>Continue to Next Module</Text>
         </TouchableOpacity>
       </View>
     </GradientBackground>
@@ -60,12 +71,6 @@ const CompletionScreen = ({route}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAF4E5',
-  },
   congratulationsText: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -77,25 +82,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 20,
   },
-  button: {
-    backgroundColor: '#9AAB63',
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: '80%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-  },
   moduleImage: {
     width: '100%',
     height: 400,
     borderRadius: 10,
   },
-  customButtonContainer: {
-    margin: 30, // Add padding here
+  nextModuleButton: {
+    position: 'absolute',
+    bottom: 30,
+    left: 20,
+    right: 20,
   },
 });
 

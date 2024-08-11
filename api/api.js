@@ -85,7 +85,7 @@ export const getUserProgress = async (email, courseId) => {
   }
 };
 
-export const updateUserProgress = async (email, courseId, moduleId) => {
+export const updateUserProgress = async (email, courseId, moduleId, nextProgress) => {
   try {
     console.log(email, courseId, moduleId);
     const headers = await getHeaders();
@@ -95,6 +95,7 @@ export const updateUserProgress = async (email, courseId, moduleId) => {
         email,
         courseId,
         moduleId,
+        "newProgress": nextProgress,
       },
       {headers},
     );

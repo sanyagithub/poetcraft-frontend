@@ -15,17 +15,19 @@ import AnswerFeedbackModal from './AnswerFeedbackModal';
 import {audioFiles, globalAudioFiles, playSound} from '../api/audio';
 
 const PoemScansion = ({
-  poemId,
-  syllables,
-  correctPattern,
-  correctEdges,
-  handleNextQuestion,
-  explanation,
-  userInput,
-  feedback,
-  setUserInput,
-  setFeedback,
-}) => {
+                        poemId,
+                        testID,
+                        syllables,
+                        correctPattern,
+                        correctEdges,
+                        handleNextScreen,
+                        explanation,
+                        userInput,
+                        feedback,
+                        setUserInput,
+                        setFeedback,
+  te
+                      }) => {
   console.log('Initial props:', {
     poemId,
     syllables,
@@ -34,10 +36,9 @@ const PoemScansion = ({
     explanation,
     userInput,
     feedback,
+    testID
   });
 
-  // const [userInput, setUserInput] = useState([]);
-  // const [feedback, setFeedback] = useState([]);
   const [syllableLayouts, setSyllableLayouts] = useState([]);
   const [visibleLines, setVisibleLines] = useState([]);
   const [audioFile, setAudioFile] = useState('');
@@ -52,10 +53,11 @@ const PoemScansion = ({
   const [edgesInput, setEdgesInput] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const scrollViewRef = useRef(null);
+  const horizontalScrollViewRef = useRef(null);
+
   const initializeStates = () => {
     console.log('Initializing states with syllables:', syllables);
-    // setUserInput(syllables.map(line => line.map(() => '')));
-    // setFeedback(syllables.map(line => line.map(() => '')));
     setSyllableLayouts(
       syllables.map(line => line.map(() => ({width: 0, x: 0}))),
     );
@@ -82,31 +84,43 @@ const PoemScansion = ({
   useEffect(() => {
     if (syllables.length > 0) {
       initializeStates();
+      scrollToTopLeft();  // Scroll to top-left when new poem is presented
     }
+  }, [poemId]);
 
-    // console.log('feedback state updated:', feedback);
+  useEffect(() => {
+    scrollToTopLeft(); // Scroll to top-left on step change
+  }, [currentStep]);
+
+  const scrollToTopLeft = () => {
+    if (horizontalScrollViewRef.current && scrollViewRef.current) {
+      horizontalScrollViewRef.current.scrollTo({x: 0, y: 0, animated: true});
+      scrollViewRef.current.scrollTo({x: 0, y: 0, animated: true});
+    }
+  };
+
+  useEffect(() => {
+    if (syllables.length > 0) {
+      initializeStates();
+    }
   }, [syllables]);
-
-  // useEffect(() => {
-  //   console.log('feedback state updated:', feedback);
-  // }, [feedback]);
 
   const handleInputChange = (lineIndex, syllableIndex) => {
     playSound(globalAudioFiles.tapClick);
     const newInput = userInput.map((line, i) =>
       i === lineIndex
         ? line.map((syllable, j) => {
-            if (j === syllableIndex) {
-              return currentStep === 1
-                ? syllable === '/'
-                  ? ''
-                  : '/'
-                : syllable === 'u'
+          if (j === syllableIndex) {
+            return currentStep === 1
+              ? syllable === '/'
+                ? ''
+                : '/'
+              : syllable === 'u'
                 ? ''
                 : 'u';
-            }
-            return syllable;
-          })
+          }
+          return syllable;
+        })
         : line,
     );
     setUserInput(newInput);
@@ -116,8 +130,8 @@ const PoemScansion = ({
     const newEdgesInput = edgesInput.map((line, i) =>
       i === lineIndex
         ? line.map((edge, j) =>
-            j === edgeIndex ? (edge === '|' ? ' ' : '|') : edge,
-          )
+          j === edgeIndex ? (edge === '|' ? ' ' : '|') : edge,
+        )
         : line,
     );
     setEdgesInput(newEdgesInput);
@@ -168,7 +182,7 @@ const PoemScansion = ({
         ),
       );
     } else if (currentStep === 3) {
-      console.log(edgesInput);
+      console.log("input by user:", edgesInput);
       correct = edgesInput.every((line, lineIndex) =>
         line.every(
           (input, edgeIndex) =>
@@ -192,7 +206,7 @@ const PoemScansion = ({
         input === correctPattern[lineIndex][syllableIndex] ||
         (currentStep === 3 &&
           edgesInput[lineIndex][syllableIndex - 1] ===
-            correctEdges[lineIndex][syllableIndex - 1])
+          correctEdges[lineIndex][syllableIndex - 1])
           ? 'correct'
           : 'wrong',
       ),
@@ -212,10 +226,10 @@ const PoemScansion = ({
       if (correctEdges.length > 0) {
         setCurrentStep(3);
       } else {
-        handleNextQuestion();
+        handleNextScreen();
       }
     } else if (currentStep === 3) {
-      handleNextQuestion();
+      handleNextScreen();
     }
   };
 
@@ -234,15 +248,16 @@ const PoemScansion = ({
               {currentStep < 3 ? (
                 <View style={styles.syllableWrapper}>
                   <TouchableOpacity
+                    testID={`Syllable-${lineIndex}-${syllableIndex}`}
                     style={[
                       styles.input,
                       feedback[lineIndex] &&
                       feedback[lineIndex][syllableIndex] === 'correct'
                         ? styles.correct
                         : feedback[lineIndex] &&
-                          feedback[lineIndex][syllableIndex] === 'wrong'
-                        ? styles.wrong
-                        : null,
+                        feedback[lineIndex][syllableIndex] === 'wrong'
+                          ? styles.wrong
+                          : null,
                     ]}
                     onPress={() => handleInputChange(lineIndex, syllableIndex)}>
                     <Text style={styles.inputText}>
@@ -285,6 +300,7 @@ const PoemScansion = ({
                             toggleLineVisibility(lineIndex, syllableIndex);
                           }}>
                           <Image
+                            testID={`Arrow-${lineIndex}-${syllableIndex}`}
                             source={require('../images/hand.png')}
                             style={styles.handImage}
                           />
@@ -317,8 +333,9 @@ const PoemScansion = ({
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setPoemModalVisible(!poemModalVisible)}>
-              <Text style={styles.closeButtonText}>X</Text>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
+            <Text style={styles.poemText}>Complete Poem</Text>
             <Text style={styles.poemText}>{poemText}</Text>
             <TouchableOpacity
               onPress={() => playSound(globalAudioFiles[audioFile])}>
@@ -330,7 +347,7 @@ const PoemScansion = ({
           </View>
         </View>
       </Modal>
-      <View style={styles.header}>
+      <View style={styles.header} testID={testID}>
         {currentStep > 1 && (
           <TouchableOpacity onPress={handleBack}>
             <Image
@@ -350,33 +367,26 @@ const PoemScansion = ({
       <View style={styles.instructionContainer}>
         <Text style={styles.instructionTitle}>
           {currentStep === 1
-            ? 'Click the boxes above to mark the stressed syllables'
+            ? 'Tap each box to highlight the stressed syllables.'
             : currentStep === 2
-            ? 'Click the boxes above to mark the unstressed syllables'
-            : 'Tap the arrows to draw edges between the syllables.'}
+              ? 'Tap each box to mark the unstressed syllables.'
+              : 'Tap the arrows to connect syllables and draw edges.'}
         </Text>
       </View>
-      {/*<TouchableOpacity onPress={scrollLeft} style={[styles.scrollButton, styles.leftButton]}>*/}
-      {/*  <Text style={styles.buttonText}>{'<'}</Text>*/}
-      {/*</TouchableOpacity>*/}
-      <ScrollView
-        // ref={scrollViewRef}
-        horizontal
-        showsHorizontalScrollIndicator={true}>
+      <ScrollView horizontal ref={horizontalScrollViewRef} showsHorizontalScrollIndicator={true}>
         <ScrollView
+          ref={scrollViewRef}
+          testID="scrollView"
           contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={true}>
           <View style={styles.poemContainer}>{renderPoemLines()}</View>
         </ScrollView>
       </ScrollView>
-      {/*<TouchableOpacity onPress={scrollRight} style={[styles.scrollButton, styles.rightButton]}>*/}
-      {/*  <Text style={styles.buttonText}>{'>'}</Text>*/}
-      {/*</TouchableOpacity>*/}
       {showSubmitButton ? (
         <TouchableOpacity
           style={commonStyles.buttonContainer}
           onPress={checkAnswers}>
-          <Text style={commonStyles.buttonTitle}>Submit</Text>
+          <Text style={commonStyles.buttonTitle}>Check Your Answer</Text>
         </TouchableOpacity>
       ) : (
         <AnswerFeedbackModal
@@ -403,23 +413,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  scrollButton: {
-    padding: 10,
-    //backgroundColor: '#ccc',
-    borderRadius: 5,
-    position: 'absolute',
-    zIndex: 1,
-    top: '50%',
-  },
-  leftButton: {
-    left: 0,
-  },
-  rightButton: {
-    right: 0,
-  },
   inputText: {
-    fontSize: 24, // Adjust this value to change the size of the user input text
-    fontWeight: 'bold', // Optional: to make the text bold
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   explanationText: {
     fontSize: 13,
@@ -480,36 +476,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  button: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginBottom: 10,
-    marginTop: 20,
-    borderRadius: 10,
-  },
-  poemButton: {
-    backgroundColor: '#9AAB63',
-    borderRadius: 10,
-    paddingHorizontal: 80,
-    paddingVertical: 10,
-  },
-  poem_button_text: {
-    color: 'white',
-    fontFamily: 'TildaSans-Regular',
-    fontSize: 15,
-    alignSelf: 'center',
-  },
-  container: {
-    backgroundColor: '#FAF4E5',
-    flex: 1,
-    padding: 16,
-  },
-  scrollViewContent: {
-    alignItems: 'center',
-    width: '100%',
-    // paddingHorizontal: 50,
-    //  marginHorizontal: 50,
-  },
   poemText: {
     fontSize: 13,
     marginBottom: 10,
@@ -520,19 +486,17 @@ const styles = StyleSheet.create({
   poemContainer: {
     width: '100%',
     marginBottom: 20,
-    //marginHorizontal:20,
-    //  borderWidth: 1,
   },
   lineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginBottom: 10,
     width: '100%',
   },
   stressWrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
   },
@@ -541,7 +505,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginHorizontal: 8,
     marginBottom: 5,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   edgeWrapper: {
     flexDirection: 'row',
@@ -550,9 +514,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   input: {
-    backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'black',
     width: 40,
     height: 50,
     textAlign: 'center',
@@ -584,11 +547,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     paddingTop: 80,
-    // backgroundColor: '#FAF4E5',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingHorizontal: 16,
   },
   instructionTitle: {
     fontFamily: 'Teachers-Bold',
@@ -596,25 +557,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    // paddingHorizontal: 16,
   },
   arrowWrapper: {
     flexDirection: 'row',
     position: 'relative',
-  },
-  feedbackContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 60,
-    paddingVertical: 15,
-  },
-  correctFeedback: {
-    backgroundColor: '#9AAB63',
-  },
-  incorrectFeedback: {
-    backgroundColor: '#FE502B',
   },
   modalOverlay: {
     flex: 1,
@@ -638,49 +584,25 @@ const styles = StyleSheet.create({
     width: 200,
     height: 50,
     alignSelf: 'center',
-    // marginLeft: 13,
   },
   header: {
     position: 'absolute',
-    top: 10, // Adjust this value as needed for spacing from the top
+    top: 10,
     left: 0,
     right: 0,
     flexDirection: 'row',
-    justifyContent: 'center', // Center horizontally
-    alignItems: 'center', // Center vertically
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
-    zIndex: 1, // Ensure the header is on top
+    zIndex: 1,
   },
   showPoemIcon: {
-    //marginRight: 25,
     width: 130,
     height: 40,
-    // marginBottom: 10,
   },
   goBackIcon: {
     width: 130,
     height: 40,
-  },
-  imageContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    paddingBottom: 52,
-  },
-  wrongAnswerImage: {
-    width: 225,
-    height: 175,
-  },
-  correctAnswerImage: {
-    width: 225,
-    height: 180,
-  },
-  button_text: {
-    fontFamily: 'TildaSans-Regular',
-    fontSize: 15,
-    alignSelf: 'center',
   },
   visibleLine: {
     position: 'absolute',
@@ -690,19 +612,14 @@ const styles = StyleSheet.create({
     top: -50,
     marginHorizontal: 1,
   },
-  arrowText: {
-    fontSize: 16,
-    color: '#9AAB63',
-    fontWeight: 'bold',
-  },
   arrowPosition: (syllableLayouts, lineIndex, syllableIndex) => ({
     position: 'absolute',
     left:
       syllableLayouts[lineIndex][syllableIndex]?.x +
-        syllableLayouts[lineIndex][syllableIndex]?.width / 2 +
-        (syllableLayouts[lineIndex][syllableIndex + 1]?.x -
-          syllableLayouts[lineIndex][syllableIndex]?.x) /
-          2 || 0,
+      syllableLayouts[lineIndex][syllableIndex]?.width / 2 +
+      (syllableLayouts[lineIndex][syllableIndex + 1]?.x -
+        syllableLayouts[lineIndex][syllableIndex]?.x) /
+      2 || 0,
   }),
 });
 

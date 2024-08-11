@@ -11,19 +11,31 @@ import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
 export default function HomeScreen({navigation}) {
+  const handleNavigation = () => {
+    console.log("I am taped")
+    try {
+      navigation.navigate('Courses');
+    } catch (error) {
+      console.error("Navigation error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <GradientBackground>
-      <View style={commonStyles.container}>
-        <Text style={styles.heading}>Discover the Rhythm of Poetry</Text>
+      <View testID="homeScreen" style={commonStyles.container}>
+        <Text accessibilityLabel="Heading: Dive Into the Rhythm of Poetry" style={styles.heading}>Dive Into the Rhythm of Poetry</Text>
         <Image style={styles.imageStyle} source={require('../images/welcome.gif')} />
-        <Text style={styles.description}>
-          Unlock the secrets of meter and bring your poetry to life!
+        <Text accessibilityLabel="Description: Unveil the Secrets of Meter and Transform Your Words into Art!" style={styles.description}>
+          Unveil the Secrets of Meter and Transform Your Words into Art!
         </Text>
-        <Text style={styles.readyText}>Ready to begin?</Text>
+        <Text accessibilityLabel="Ready Text: Are You Ready to Start Your Journey?" style={styles.readyText}>Are You Ready to Start Your Journey?</Text>
         <TouchableOpacity
+          testID="beginJourney"
           style={commonStyles.buttonContainer}
-          onPress={() => navigation.navigate('Courses')}>
-          <Text style={commonStyles.buttonTitle}>Start Learning Now</Text>
+          activeOpacity={0.7}
+          onPress={handleNavigation}>
+          <Text style={commonStyles.buttonTitle}>Begin Your Poetry Journey</Text>
         </TouchableOpacity>
       </View>
     </GradientBackground>
@@ -57,25 +69,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 16,
     color: '#333',
-  },
-  noteContainer: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 24,
-    borderWidth: 1,
-    padding: 15,
-    borderColor: '#DDB1E4', // Border color for the note
-    borderStyle: 'dashed',
-    backgroundColor: '#FAF4E5', // Background color for the note
-  },
-  noteText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 8,
-    color: '#DDB1E4', // Note text color
-  },
-  identifyButton: {
-    backgroundColor: '#F5D867', // Identify button color
   },
   imageStyle: {
     width: 300,

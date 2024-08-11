@@ -55,6 +55,7 @@ const UpdatePasswordScreen = () => {
           style={styles.input}
           autoCapitalize="none"
           placeholder="New Password"
+          placeholderTextColor='#DDB1E4'
           secureTextEntry
           value={newPassword}
           onChangeText={setNewPassword}
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   message: {
-    fontFamily: 'TildaSans-Regular',
+    fontFamily: 'Teachers-Regular',
     alignSelf: 'center',
     fontSize: 20,
     color: 'red',

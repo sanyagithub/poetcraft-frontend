@@ -34,18 +34,29 @@ const resetPassword = async email => {
     throw error;
   }
 };
+const validateEmail = email => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase());
+};
 
 const ResetPasswordScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const handleResetPassword = async () => {
     console.log('email:', email);
+    setError('');
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email.');
+      return;
+    }
     try {
       await resetPassword(email);
       navigation.navigate('ChangePasswordScreen', {email});
       console.log('Reset password email sent');
     } catch (error) {
-      console.error('Reset password failed:', error);
+      console.log('Reset password failed:', error);
+      setError('Reset password failed: ' + error.message);
     }
   };
 
@@ -67,11 +78,13 @@ const ResetPasswordScreen = ({navigation}) => {
             <Text style={styles.text_title}>Reset Password</Text>
             <TextInput
               autoCapitalize="none"
+              placeholderTextColor='#DDB1E4'
               style={styles.input}
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
             />
+            {error && <Text style={styles.errorText}>{error}</Text>}
             <Pressable
               style={commonStyles.buttonContainer}
               onPress={handleResetPassword}>
@@ -104,6 +117,13 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     fontSize: 18,
   },
+  errorText: {
+    color: 'red',
+    fontFamily: 'Teachers-Regular',
+    fontSize: 14,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
   buttonContainer: {
     marginBottom: 25,
     marginTop: 10,
@@ -131,13 +151,13 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontFamily: 'TildaSans-Regular',
     textDecorationLine: 'underline',
-    fontSize: 10,
+    fontSize: 14,
     alignSelf: 'center',
     marginBottom: 2,
   },
   text_login: {
     fontFamily: 'Teachers-Regular',
-    fontSize: 12,
+    fontSize: 14,
     alignSelf: 'center',
     marginTop: 20,
     marginBottom: 20,

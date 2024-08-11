@@ -6,12 +6,26 @@ import SyllableCheckerScreen from './SyllableCheckerScreen';
 import React from 'react';
 import HomeScreen from './HomeScreen';
 import CourseStack from './CourseStack';
-
-// MainTabs.js
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { Alert } from "react-native";
+import LogoutScreen from "./LogoutScreen";
 
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
+  const navigation = useNavigation();
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate('Login'); // Assuming you redirect to a Login screen after logout
+    } catch (error) {
+      console.error("Logout error:", error);
+      Alert.alert("Sign Out Failed", "Please try again.");
+    }
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -26,11 +40,13 @@ const MainTabs = () => {
             iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Awards') {
             iconName = focused ? 'trophy' : 'trophy-outline';
-          } else if (route.name === 'SyllableChecker') {
+          } else if (route.name === 'Syllables') {
             iconName = focused ? 'search' : 'search-outline';
+          } else if (route.name === 'Logout') {
+            iconName = focused ? 'exit' : 'exit-outline';
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={color} accessibilityLabel={`${route.name} Tab`} />;
         },
         tabBarStyle: {
           backgroundColor: '#FAF4E5', // Custom background color for the tab bar
@@ -43,13 +59,23 @@ const MainTabs = () => {
         tabBarActiveTintColor: '#FE502B',
         headerShown: false,
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Courses" component={CourseStack} />
-      {/*<Tab.Screen name="Awards" component={AwardsScreen} />*/}
+      <Tab.Screen name="Home" component={HomeScreen} options={{ testID: 'homeTabScreen', tabBarLabel: 'Dashboard' }} />
+      <Tab.Screen name="Courses" component={CourseStack} options={{ tabBarLabel: 'Your Courses' }} />
       <Tab.Screen
-        name="SyllableChecker"
+        name="Syllables"
         component={SyllableCheckerScreen}
-        options={{tabBarLabel: 'Identify Syllables'}}
+        options={{tabBarLabel: 'Syllable Stress'}}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={LogoutScreen}
+        options={{ tabBarLabel: 'Sign Out' }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault(); // Prevent the default action (navigation)
+            handleLogout();
+          },
+        }}
       />
     </Tab.Navigator>
   );

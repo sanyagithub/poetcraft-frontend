@@ -96,6 +96,7 @@ const ChangePasswordScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               placeholder="Temporary Password"
+              placeholderTextColor='#DDB1E4'
               autoCapitalize="none"
               secureTextEntry
               value={currentPassword}
@@ -104,6 +105,7 @@ const ChangePasswordScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               placeholder="New Password"
+              placeholderTextColor='#DDB1E4'
               autoCapitalize="none"
               secureTextEntry
               value={newPassword}
@@ -112,6 +114,7 @@ const ChangePasswordScreen = ({navigation, route}) => {
             <TextInput
               style={styles.input}
               placeholder="Confirm New Password"
+              placeholderTextColor='#DDB1E4'
               autoCapitalize="none"
               secureTextEntry
               value={confirmPassword}

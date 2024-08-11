@@ -5,7 +5,7 @@ import {useEffect, useState} from 'react';
 import WordScantion from './WordScantion';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
-const QuestionRenderer = ({question, handleNextQuestion}) => {
+const QuestionRenderer = ({question, handleNextScreen}) => {
   console.log('question is ', question);
 
   function convertToJSONString(input) {
@@ -61,17 +61,12 @@ const QuestionRenderer = ({question, handleNextQuestion}) => {
       }
     }
   }, [question]);
-  // const answerOptions;
-  // answerOptions.add(question)
-  //
-  // const answerOptions = [\"A method of analyzing poetry\", \"A type of poem\", \"A poetic device\", \"None of the above\"];
-  //console.log('question type:', question.questionText);
 
   if (question.type === 'STRESS_CHECKER_POEM' && syllables.length === 0) {
     // return null; // Or a loading indicator if you prefer
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#DDB1E4" />
       </View>
     );
   }
@@ -79,20 +74,22 @@ const QuestionRenderer = ({question, handleNextQuestion}) => {
     case 'MCQ':
       return (
         <MCQQuestion
+          testID={`MCQQuestion-${question.id}`}
           question={question.questionText}
           answerOptions={answerOptions}
           correctAnswer={question.correctAnswer}
-          handleNextQuestion={handleNextQuestion}
+          handleNextScreen={handleNextScreen}
           explanation={question.explanation}
         />
       );
     case 'DRAG_DROP':
       return (
         <WordPuzzle
+          testID="WordPuzzle"
           word={question.dragDropWord}
           correctAnswers={question.dragDropSyllablesCorrect}
           initialTexts={answerOptions}
-          handleNextQuestion={handleNextQuestion}
+          handleNextScreen={handleNextScreen}
           explanation={question.explanation}
         />
       );
@@ -100,11 +97,12 @@ const QuestionRenderer = ({question, handleNextQuestion}) => {
     case 'STRESS_CHECKER_POEM':
       return (
         <PoemScantion
+          testID={`PoemScantion-${question.id}`}
           poemId={question.poemId}
           syllables={syllables}
           correctPattern={correctPattern}
           correctEdges={correctEdges ? correctEdges : null}
-          handleNextQuestion={handleNextQuestion}
+          handleNextScreen={handleNextScreen}
           explanation={question.explanation}
           userInput={userInput}
           feedback={feedback}
@@ -115,10 +113,11 @@ const QuestionRenderer = ({question, handleNextQuestion}) => {
     case 'STRESS_CHECKER_WORDS':
       return (
         <WordScantion
+          testID={`WordScantion-${question.id}`}
           lineText={question.questionText}
           syllables={syllables}
           correctPattern={correctPattern}
-          handleNextQuestion={handleNextQuestion}
+          handleNextScreen={handleNextScreen}
           explanation={question.explanation}
           audioId={question.audioId ? question.audioId : null}
         />

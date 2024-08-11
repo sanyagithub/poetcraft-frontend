@@ -9,6 +9,7 @@ import MainTabs from './components/MainTabs';
 import ResetPasswordScreen from './components/ResetPasswordScreen';
 import UpdatePasswordScreen from './components/UpdatePasswordScreen';
 import ChangePasswordScreen from './components/ChangePasswordScreen';
+import LogoutScreen from "./components/LogoutScreen";
 
 const Stack = createStackNavigator();
 
@@ -46,14 +47,7 @@ const App = () => {
           component={UpdatePasswordScreen}
         />
         <Stack.Screen name={'MainTabs'} component={MainTabs} />
-        {/*<Stack.Screen name="HomeScreen" component={HomeScreen} />*/}
-
-        {/*<Stack.Screen name="Courses" component={Courses} />*/}
-        {/*<Stack.Screen name="AwardsScreen" component={AwardsScreen} />*/}
-        {/*<Stack.Screen name="Modules" component={Modules} />*/}
-        {/*<Stack.Screen name="QuestionFlow" component={QuestionFlow} />*/}
-        {/*<Stack.Screen name="QuestionRenderer" component={QuestionRenderer} />*/}
-        {/*<Stack.Screen name="CompletionScreen" component={CompletionScreen} />*/}
+        <Stack.Screen name={'LogoutScreen'} component={LogoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

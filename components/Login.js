@@ -8,8 +8,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-} from 'react-native';
+  ScrollView, TouchableOpacity,
+} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import {saveToken, saveEmail} from '../api/auth';
 import GradientBackground from './GradientBackground';
@@ -20,6 +20,8 @@ const validateEmail = email => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(String(email).toLowerCase());
 };
+
+
 
 const loginUser = async (email, password) => {
   // console.log(`${API_BASE_URL}/api/auth/login`);
@@ -293,78 +295,80 @@ const countryCodes = [
 ];
 
 const Login = ({navigation}) => {
-  const [loginMethod, setLoginMethod] = useState('email');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [countryCode, setCountryCode] = useState('91'); // Default country code
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [error, setError] = useState('');
-  const [otpRetryCount, setOtpRetryCount] = useState(0);
-  const [otpTimer, setOtpTimer] = useState(60);
+  const [loginData, setLoginData] = useState({
+    loginMethod: 'email',
+    email: '',
+    password: '',
+    countryCode: '91',
+    phoneNumber: '',
+    otp: '',
+    isOtpSent: false,
+    error: '',
+    otpRetryCount: 0,
+    otpTimer: 60,
+  });
 
-  useEffect(() => {
-    // Reset the states when loginMethod changes
-    setEmail('');
-    setPassword('');
-    setPhoneNumber('');
-    setOtp('');
-    setIsOtpSent(false);
-    setError('');
-    setOtpRetryCount(0);
-    setOtpTimer(60);
-  }, [loginMethod]);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    let timer;
-    if (otpTimer > 0) {
-      timer = setInterval(() => {
-        setOtpTimer(prev => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [otpTimer]);
+  const toggleShowPassword = () => setShowPassword(!showPassword);
+
+  const handleChange = (key, value) => {
+    setLoginData(prevState => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
   const handleLogin = async () => {
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email.');
+    console.log("I am definitely tapped")
+    handleChange('error', '');
+    if (!validateEmail(loginData.email)) {
+      handleChange('error', 'Please enter a valid email address.');
       return;
     }
 
+    setLoading(true);
     try {
-      await loginUser(email, password);
+      await loginUser(loginData.email, loginData.password);
       navigation.replace('MainTabs');
     } catch (error) {
-      setError('Login failed: ' + error.message);
+      handleChange('error', 'Oops! Login failed: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSendOtp = async () => {
-    const fullPhoneNumber = countryCode + phoneNumber;
+    const fullPhoneNumber = loginData.countryCode + loginData.phoneNumber;
+    setLoading(true);
     try {
       await sendOtp(fullPhoneNumber);
-      setIsOtpSent(true);
-      setOtpTimer(60); // OTP valid for 60 seconds
+      handleChange('isOtpSent', true);
+      handleChange('otpTimer', 60);
     } catch (error) {
-      setError('Failed to send OTP: ' + error.message);
+      handleChange('error', 'Failed to send OTP: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async () => {
-    console.log('I am pressed');
-    const fullPhoneNumber = countryCode + phoneNumber;
-    if (otpRetryCount >= 3) {
-      setError('Maximum OTP attempts reached. Please request a new OTP.');
+    if (loginData.otpRetryCount >= 3) {
+      handleChange('error', 'Maximum OTP attempts reached. Please request a new OTP.');
       return;
     }
-    console.log(fullPhoneNumber, otp);
+
+    const fullPhoneNumber = loginData.countryCode + loginData.phoneNumber;
+    setLoading(true);
     try {
-      await verifyOtp(fullPhoneNumber, otp);
+      await verifyOtp(fullPhoneNumber, loginData.otp);
       navigation.replace('MainTabs');
     } catch (error) {
-      setError('OTP verification failed: ' + error.message);
-      setOtpRetryCount(prev => prev + 1);
+      handleChange('error', 'OTP verification failed: ' + error.message);
+      handleChange('otpRetryCount', loginData.otpRetryCount + 1);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -375,133 +379,109 @@ const Login = ({navigation}) => {
   const goToResetPassword = () => {
     navigation.navigate('ResetPasswordScreen');
   };
-
   return (
     <GradientBackground>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1}}>
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={commonStyles.container}>
-            <Image
-              source={require('../images/login.png')}
-              style={styles.image}
-            />
-            <Text style={styles.textTitle}>Login</Text>
-            {/*<View style={styles.toggleContainer}>*/}
-            {/*  <Pressable*/}
-            {/*    style={[*/}
-            {/*      styles.toggleButton,*/}
-            {/*      loginMethod === 'email' && styles.activeToggleButton,*/}
-            {/*    ]}*/}
-            {/*    onPress={() => setLoginMethod('email')}>*/}
-            {/*    <Text style={styles.toggleButtonText}>Email</Text>*/}
-            {/*  </Pressable>*/}
-            {/*  <Pressable*/}
-            {/*    style={[*/}
-            {/*      styles.toggleButton,*/}
-            {/*      loginMethod === 'phone' && styles.activeToggleButton,*/}
-            {/*    ]}*/}
-            {/*    onPress={() => setLoginMethod('phone')}>*/}
-            {/*    <Text style={styles.toggleButtonText}>Phone</Text>*/}
-            {/*  </Pressable>*/}
-            {/*</View>*/}
-            {loginMethod === 'email' ? (
+            <Image source={require('../images/login.png')} style={styles.image} />
+            <Text style={styles.textTitle} testID="loginScreenTitle">Welcome Back!</Text>
+
+            {loginData.loginMethod === 'email' ? (
               <>
                 <TextInput
-                  style={styles.input}
-                  placeholder="Email"
-                  autoCapitalize="none"
-                  value={email}
-                  onChangeText={setEmail}
+                  style={styles.inputEmail}
+                  placeholder="Your Email Address"
+                  placeholderTextColor='#DDB1E4'
+                  value={loginData.email}
+                  onChangeText={value => handleChange('email', value)}
+                  autoCapitalize='none'
+                  testID="emailInputLogin"
                 />
+                <View style={styles.inputPasswordContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Password"
-                  autoCapitalize="none"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
+                  placeholder="Your Password"
+                  placeholderTextColor='#DDB1E4'
+                  secureTextEntry={!showPassword}
+                  value={loginData.password}
+                  onChangeText={value => handleChange('password', value)}
+                  autoCapitalize='none'
+                  testID="passwordInputLogin"
                 />
-                {error && <Text style={styles.errorText}>{error}</Text>}
+                  <TouchableOpacity onPress={toggleShowPassword} style={styles.showHideButton} testID="showPasswordButton">
+                    <Text style={styles.showHideText}>
+                      {showPassword ? 'Hide' : 'Show'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {loginData.error && <Text style={styles.errorText}>{loginData.error}</Text>}
                 <Pressable
-                  style={commonStyles.buttonContainer}
-                  onPress={handleLogin}>
-                  <Text style={commonStyles.buttonTitle}>Log In</Text>
+                  style={[commonStyles.buttonContainer, loading && styles.disabledButton]}
+                  onPress={handleLogin}
+                  disabled={loading}
+                  testID="loginButton"
+                >
+                  <Text style={commonStyles.buttonTitle}>{loading ? 'Logging In...' : 'Start Creating'}</Text>
                 </Pressable>
               </>
             ) : (
               <>
                 <View style={styles.phoneContainer}>
                   <RNPickerSelect
-                    onValueChange={value => setCountryCode(value)}
+                    onValueChange={value => handleChange('countryCode', value)}
                     items={countryCodes}
                     style={pickerSelectStyles}
-                    placeholder={{label: 'Select Country Code', value: null}}
-                    useNativeAndroidPickerStyle={false}
-                    value={countryCode} // Ensure the picker displays only the selected value
-                    textInputProps={{
-                      placeholder: 'Select Country Code',
-                      value: countryCode,
-                    }}
+                    value={loginData.countryCode}
                   />
                   <TextInput
                     style={styles.phoneInput}
-                    autoCapitalize="none"
                     placeholder="Phone Number"
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
+                    placeholderTextColor='#DDB1E4'
+                    value={loginData.phoneNumber}
+                    onChangeText={value => handleChange('phoneNumber', value)}
                     keyboardType="phone-pad"
                   />
                 </View>
-                {isOtpSent && (
+                {loginData.isOtpSent && (
                   <TextInput
                     style={styles.input}
-                    autoCapitalize="none"
-                    placeholder="OTP"
-                    value={otp}
-                    onChangeText={setOtp}
+                    placeholder="Enter OTP"
+                    placeholderTextColor='#DDB1E4'
+                    value={loginData.otp}
+                    onChangeText={value => handleChange('otp', value)}
                     keyboardType="numeric"
-                    secureTextEntry={false}
                   />
                 )}
-                {isOtpSent ? (
-                  <>
-                    <Pressable onPress={handleVerifyOtp}>
-                      <Text style={commonStyles.buttonTitle}>Verify OTP</Text>
-                    </Pressable>
-                    {otpTimer > 0 ? (
-                      <Text style={styles.timerText}>
-                        OTP valid for: {otpTimer}s
-                      </Text>
-                    ) : (
-                      <Pressable
-                        style={commonStyles.buttonContainer}
-                        onPress={handleSendOtp}>
-                        <Text style={commonStyles.buttonTitle}>Resend OTP</Text>
-                      </Pressable>
-                    )}
-                  </>
-                ) : (
-                  <Pressable
-                    style={commonStyles.buttonContainer}
-                    onPress={handleSendOtp}>
-                    <Text style={commonStyles.buttonTitle}>Send OTP</Text>
-                  </Pressable>
+                <Pressable
+                  style={[commonStyles.buttonContainer, loading && styles.disabledButton]}
+                  onPress={loginData.isOtpSent ? handleVerifyOtp : handleSendOtp}
+                  disabled={loading}
+                >
+                  <Text style={commonStyles.buttonTitle}>
+                    {loading ? 'Processing...' : loginData.isOtpSent ? 'Confirm Your Access' : 'Get Your OTP'}
+                  </Text>
+                </Pressable>
+                {loginData.otpTimer > 0 && (
+                  <Text style={styles.timerText}>
+                    OTP valid for: {loginData.otpTimer}s
+                  </Text>
                 )}
               </>
             )}
-            {loginMethod === 'email' && (
+
+            {loginData.loginMethod === 'email' && (
               <>
-                <Text style={styles.forgotPassword} onPress={goToResetPassword}>
-                  Forgot Password?
-                </Text>
-                <Text style={styles.textRegister}>
-                  Need an account?{' '}
-                  <Text style={styles.linkText} onPress={goToRegister}>
-                    Sign Up
+                <Text style={styles.forgotPassword} onPress={goToResetPassword} testID="forgotPasswordLink">Forgot Password?</Text>
+                <View style={styles.registerContainer}>
+                  <Text style={styles.textRegister}>
+                    Need an account?
                   </Text>
-                </Text>
+                  <TouchableOpacity onPress={goToRegister} testID="signUpLink">
+                    <Text style={styles.linkText}>Sign Up</Text>
+                  </TouchableOpacity>
+                </View>
+
               </>
             )}
           </View>
@@ -525,6 +505,10 @@ const pickerSelectStyles = StyleSheet.create({
     fontSize: 18,
     // marginLeft: 10,
   },
+  disabledButton: {
+    backgroundColor: '#c0c0c0', // A lighter grey color to indicate it's disabled
+    opacity: 0.7, // Make it slightly transparent
+  },
   inputAndroid: {
     fontSize: 16,
     paddingHorizontal: 10,
@@ -536,13 +520,35 @@ const pickerSelectStyles = StyleSheet.create({
     paddingRight: 30,
     width: 70,
   },
+
 });
 
 const styles = StyleSheet.create({
+  registerContainer: {
+    flexDirection: 'row', // Aligns the text and link in a row
+    justifyContent: 'center', // Centers the content horizontally
+    alignItems: 'center', // Centers the content vertically
+    marginTop: 5, // Adds some space above the container
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 30,
+  },
+  input: {
+    flex: 1,
+    fontSize: 18,
+    paddingRight: 60, // To make space for the "Show/Hide" button
+  },
+  inputPasswordContainer: {
+    position: 'relative',
+    borderColor: '#DDB1E4',
+    borderWidth: 3,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   image: {
     width: 150,
@@ -587,7 +593,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 150,
   },
-  input: {
+  inputEmail: {
     // flex: 1,
     //marginBottom: 15,
     paddingLeft: 5,
@@ -624,6 +630,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 10,
   },
+  showHideButton: {
+    position: 'absolute',
+    right: 20,
+  },
+  showHideText: {
+    color: '#DDB1E4',
+    fontSize: 14,
+  },
   buttonTitle: {
     fontFamily: 'TildaSans-Regular',
     fontSize: 18,
@@ -653,12 +667,12 @@ const styles = StyleSheet.create({
   textRegister: {
     fontFamily: 'Teachers-Regular',
     fontSize: 14,
-    alignSelf: 'center',
-    marginBottom: 20,
+    color: '#333', // Adjust the color if needed
   },
   linkText: {
     color: 'blue',
     textDecorationLine: 'underline',
+    marginLeft: 5, // Adds some space between the text and the link
   },
 });
 

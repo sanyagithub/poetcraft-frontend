@@ -1,5 +1,3 @@
-// ContentRenderer.js
-
 import React, {useEffect, useRef} from 'react';
 import {
   Animated,
@@ -13,8 +11,8 @@ import {
 import commonStyles from '../styles/commonStyles';
 
 const FadeInView = props => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
-  const translateY = useRef(new Animated.Value(20)).current; // Initial value for translateY: 20
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -42,21 +40,24 @@ const FadeInView = props => {
   );
 };
 
-const ContentRenderer = ({content, handleNextQuestion}) => {
+const ContentRenderer = ({content, handleNextScreen}) => {
   return (
     <View>
-      <Image source={require('../images/Reading.gif')} style={styles.image} />
+      <Image source={require('../images/Reading.gif')} style={styles.image} testID="contentImage" />
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.heading}>{content.heading}</Text>
+        <Text style={styles.heading} testID="contentHeading">{content.heading}</Text>
         <FadeInView>
-          <Text style={styles.text}>{content.text}</Text>
+          <Text style={styles.text} testID="contentText">{content.text}</Text>
         </FadeInView>
       </ScrollView>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity
           style={commonStyles.buttonContainer}
-          onPress={handleNextQuestion}>
-          <Text style={commonStyles.buttonTitle}>Continue</Text>
+          onPress={handleNextScreen}
+          activeOpacity={0.7} // Adding feedback on press
+          testID="nextButton"
+        >
+          <Text style={commonStyles.buttonTitle}>Next</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -91,13 +92,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Teachers-Bold',
     fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'left',
+    letterSpacing: 1.5, // Adjusted for better readability
+    marginBottom: 10,
   },
   text: {
     fontFamily: 'NunitoSans_7pt-Regular',
     fontSize: 18,
-    letterSpacing: 2,
+    letterSpacing: 1.2, // Adjusted for better readability
     marginBottom: 20,
     textAlign: 'left',
   },

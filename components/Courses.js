@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,73 +6,95 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-import {getCourses, getUserProgress} from '../api/api';
-import {useNavigation} from '@react-navigation/native';
-import {getEmail} from '../api/auth';
+import { getCourses, getUserProgress } from '../api/api';
+import { useNavigation } from '@react-navigation/native';
+import { getEmail } from '../api/auth';
 import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
 
-const CourseButton = ({course, progress, onPress}) => {
+const CourseButton = ({ course, progress, onPress }) => {
   return (
-    <TouchableOpacity style={styles.courseButton} onPress={onPress}>
-      <View style={{...styles.progressBar, width: `${progress}%`}} />
+    <TouchableOpacity
+      style={styles.courseButton}
+      onPress={onPress}
+      testID="courseItem"
+      accessibilityLabel={`Course ${course.name}, ${progress}% completed`}
+    >
+      <View style={{ ...styles.progressBar, width: `${progress}%` }} />
       <Text style={styles.courseText}>{course.name}</Text>
     </TouchableOpacity>
   );
 };
 
 const Courses = () => {
-  const [courses, setCourses] = useState([]);
-  const [progressMap, setProgressMap] = useState({});
-  const [userProgress, setUserProgress] = useState({});
+  const [courses, setCourses] = useState(null);
+  const [progressMap, setProgressMap] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
     async function fetchData() {
-      const email = await getEmail();
-      const coursesData = await getCourses();
-      //const progressData = (await getUserProgress(email, coursesData.id)) || {};
-      console.log('courses', coursesData);
-      setCourses(coursesData);
+      setIsLoading(true);
+      try {
+        const email = await getEmail();
+        const coursesData = await getCourses();
+        setCourses(coursesData);
 
-      const progressData = {};
-      for (let course of coursesData) {
-        const progress = await getUserProgress(email, course.id);
-        progressData[course.id] = progress;
+        const progressData = {};
+        for (let course of coursesData) {
+          const progress = await getUserProgress(email, course.id);
+          progressData[course.id] = progress;
+        }
+        setProgressMap(progressData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("There was a problem loading the courses. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
-      console.log(progressData);
-      setProgressMap(progressData);
-      //setUserProgress(progressData);
     }
     fetchData();
   }, []);
 
-  const renderItem = ({item}) => {
-    //console.log('Rendering item:', {item}); // Debugging log
+  if (isLoading) {
+    return (
+      <GradientBackground>
+        <View style={commonStyles.container}>
+          <Text style={styles.loadingText}>Loading your courses...</Text>
+          <ActivityIndicator size="large" color="#DDB1E4" />
+        </View>
+      </GradientBackground>
+    );
+  }
+
+  const renderItem = ({ item }) => {
     const progress = progressMap[item.id] || 0;
     return (
       <CourseButton
         course={item}
         progress={progress}
-        onPress={() => navigation.navigate('Modules', {courseId: item.id})}
+        onPress={() => navigation.navigate('Modules', { courseId: item.id })}
       />
     );
   };
 
   return (
     <GradientBackground>
-      <View style={commonStyles.container}>
-        <Text style={styles.text_title}>COURSES</Text>
+      <View testID="coursesScreen" style={commonStyles.container}>
+        <Text style={styles.text_title}>Explore Our Courses</Text>
         <Image
           source={require('../images/heartline.png')}
           style={styles.heartlineimage}
         />
-        <FlatList
-          data={courses}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-        />
+        {courses && (
+          <FlatList
+            data={courses}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+          />
+        )}
       </View>
     </GradientBackground>
   );
@@ -115,20 +137,26 @@ const styles = StyleSheet.create({
   courseText: {
     fontFamily: 'Teachers-Regular',
     alignSelf: 'center',
-    fontSize: 18,
+    fontSize: 25,
   },
   text_title: {
     fontFamily: 'Teachers-Bold',
     fontSize: 30,
     alignSelf: 'center',
     marginTop: 50,
-
   },
   heartlineimage: {
     width: 100,
     height: 30,
     marginBottom: 30,
     alignSelf: 'center',
+  },
+  loadingText: {
+    fontFamily: 'Teachers-Regular',
+    fontSize: 20,
+    alignSelf: 'center',
+    marginBottom: 20,
+    color: '#333',
   },
 });
 

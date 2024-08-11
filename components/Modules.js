@@ -6,6 +6,7 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {getEmail} from '../api/auth';
@@ -20,7 +21,12 @@ import GradientBackground from './GradientBackground';
 
 const ModuleButton = ({module, progress, onPress}) => {
   return (
-    <TouchableOpacity style={styles.courseButton} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.courseButton}
+      onPress={onPress}
+      accessibilityLabel={`Module ${module.name}, ${progress}% completed`}
+      testID={`moduleButton-${module.id}`}
+    >
       <View style={{...styles.progressBar, width: `${progress}%`}} />
       <Text style={styles.courseText}>{module.name}</Text>
     </TouchableOpacity>
@@ -28,55 +34,62 @@ const ModuleButton = ({module, progress, onPress}) => {
 };
 
 const Modules = ({route}) => {
-  const [modules, setModules] = useState([]);
-  const [progressMap, setProgressMap] = useState({});
+  const [modules, setModules] = useState(null);
+  const [progressMap, setProgressMap] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    //console.log('course id is ', route.params.courseId);
-    const courseId = route.params.courseId;
     async function fetchData() {
-      const email = await getEmail();
-      const modulesData = await getModules(courseId);
-      setModules(modulesData);
+      setIsLoading(true);
+      try {
+        const email = await getEmail();
+        const modulesData = await getModules(route.params.courseId);
+        setModules(modulesData);
 
-      const progressData = {};
-      for (let module of modulesData) {
-        const progress = await getModuleProgress(email, courseId, module.id);
-        progressData[module.id] = progress;
+        const progressData = {};
+        for (let module of modulesData) {
+          const progress = await getModuleProgress(email, route.params.courseId, module.id);
+          progressData[module.id] = progress;
+        }
+        setProgressMap(progressData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("There was a problem loading the modules. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
-      setProgressMap(progressData);
     }
     fetchData();
   }, [route.params.courseId]);
 
   const handlePress = async moduleId => {
     try {
-      const email = await getEmail(); // Ensure getEmail is awaited
+      const email = await getEmail();
       const lastQuestion = await getLastQuestionAnswered(email, moduleId);
       const totalQuestions = await getTotalQuestions(email, moduleId);
 
-      if (lastQuestion < totalQuestions) {
+     // if (lastQuestion < totalQuestions) {
         navigation.navigate('QuestionFlow', {
           moduleId,
           courseId: route.params.courseId,
-          email, // Pass the actual email
+          email,
           lastQuestion,
         });
-      } else {
-        navigation.navigate('CompletionScreen', {
-          moduleId,
-          courseId: route.params.courseId,
-        });
-      }
+      // } else {
+      //   navigation.navigate('CompletionScreen', {
+      //     moduleId,
+      //     courseId: route.params.courseId,
+      //   });
+      // }
     } catch (error) {
-      console.error('Error fetching email:', error);
+      console.error('Error navigating to module:', error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
   const renderItem = ({item}) => {
     const progress = progressMap[item.id] || 0;
-    console.log(item.name);
     return (
       <ModuleButton
         module={item}
@@ -86,19 +99,32 @@ const Modules = ({route}) => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <GradientBackground>
+        <View style={commonStyles.container}>
+          <Text style={styles.loadingText}>Loading your modules...</Text>
+          <ActivityIndicator size="large" color="#DDB1E4" />
+        </View>
+      </GradientBackground>
+    );
+  }
+
   return (
     <GradientBackground>
       <View style={commonStyles.container}>
-        <Text style={styles.text_title}>MODULES</Text>
+        <Text style={styles.text_title}>Explore the Modules</Text>
         <Image
           source={require('../images/heartline.png')}
           style={styles.heartlineimage}
         />
-        <FlatList
-          data={modules}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-        />
+        {modules && (
+          <FlatList
+            data={modules}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+          />
+        )}
       </View>
     </GradientBackground>
   );
@@ -113,12 +139,10 @@ const styles = StyleSheet.create({
   courseButton: {
     marginBottom: 25,
     marginTop: 5,
-    //marginRight: 25,
     backgroundColor: '#F5D867',
     borderRadius: 10,
     padding: 5,
     alignContent: 'center',
-    // marginLeft: 25,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -143,7 +167,7 @@ const styles = StyleSheet.create({
   courseText: {
     fontFamily: 'Teachers-Regular',
     alignSelf: 'center',
-    fontSize: 18,
+    fontSize: 20,
     zIndex: 1,
   },
   text_title: {
@@ -157,6 +181,13 @@ const styles = StyleSheet.create({
     height: 30,
     marginBottom: 30,
     alignSelf: 'center',
+  },
+  loadingText: {
+    fontFamily: 'Teachers-Regular',
+    fontSize: 20,
+    alignSelf: 'center',
+    marginBottom: 20,
+    color: '#333',
   },
 });
 

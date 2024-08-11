@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,6 @@ import {
   PanResponder,
   Dimensions,
   TouchableOpacity,
-  Image,
-  Modal,
 } from 'react-native';
 import commonStyles from '../styles/commonStyles';
 import AnswerFeedbackModal from './AnswerFeedbackModal';
@@ -17,12 +15,13 @@ import {globalAudioFiles, playSound} from '../api/audio';
 const {width} = Dimensions.get('window'); // Get device screen width
 
 const WordPuzzle = ({
-  word,
-  correctAnswers,
-  initialTexts,
-  handleNextQuestion,
-  explanation,
-}) => {
+                      word,
+                      correctAnswers,
+                      initialTexts,
+                      handleNextScreen,
+                      explanation,
+                      testID
+                    }) => {
   useEffect(() => {
     console.log('Word:', word);
     console.log('Correct Answers:', correctAnswers);
@@ -31,9 +30,8 @@ const WordPuzzle = ({
 
   const boxWidth = 60;
   const boxHeight = 40;
-  const horizontalSpacing = 10; // Space between boxes
+  const horizontalSpacing = 10;
 
-  // Calculate the x positions for the boxes based on the screen width
   const calculateXPositions = () => {
     const totalWidth = 3 * boxWidth + 2 * horizontalSpacing;
     const initialX = (width - totalWidth) / 2;
@@ -45,7 +43,6 @@ const WordPuzzle = ({
 
   const xPositions = calculateXPositions();
 
-  // State for initial positions and draggables
   const [initialPositions, setInitialPositions] = useState([]);
   const [draggables, setDraggables] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -71,7 +68,6 @@ const WordPuzzle = ({
     'dashed',
   ]);
 
-  // Recalculate initial positions and draggables whenever the props change
   useEffect(() => {
     const newInitialPositions = initialTexts.map((item, index) => {
       const row = Math.floor(index / 3);
@@ -98,7 +94,6 @@ const WordPuzzle = ({
   const [showTryAgainButton, setShowTryAgainButton] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
 
-  // Input boxes positioned similarly to draggable boxes
   const inputBoxesRef = useRef([
     {
       x: xPositions[0],
@@ -123,7 +118,6 @@ const WordPuzzle = ({
     },
   ]).current;
 
-  // Creating PanResponder for each draggable box
   const panResponders = draggables.map((draggable, index) => {
     return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -157,7 +151,11 @@ const WordPuzzle = ({
           const newDraggableBorderStyles = [...draggableBorderStyles];
           newDraggableBorderStyles[index] = 'solid';
           setDraggableBorderStyles(newDraggableBorderStyles);
-          playSound(globalAudioFiles.dropSound);
+          try {
+            playSound(globalAudioFiles.dropSound);
+          } catch (error) {
+            console.error('Error playing sound:', error);
+          }
           Animated.spring(draggable.pan, {
             toValue: {
               x: inputBoxesRef[dropAreaIndex].x - 30,
@@ -170,7 +168,11 @@ const WordPuzzle = ({
             toValue: initialPositions[index],
             useNativeDriver: false,
           }).start(() => {
-            playSound(globalAudioFiles.dropSound);
+            try {
+              playSound(globalAudioFiles.dropSound);
+            } catch (error) {
+              console.error('Error playing sound:', error);
+            }
             const newColors = [...inputBoxColors];
             newColors.fill('black');
             setInputBoxColors(newColors);
@@ -187,7 +189,6 @@ const WordPuzzle = ({
   });
 
   const handleSubmit = () => {
-    // const correctAnswers = ['ex', 'am', 'ple'];
     const userAnswers = inputBoxesRef.map(box => box.text);
     setShowSubmitButton(false);
     correctAnswers = JSON.parse(correctAnswers);
@@ -209,7 +210,6 @@ const WordPuzzle = ({
   };
 
   const handleNextButtonClick = () => {
-    // Reset states for next question
     setShowSubmitButton(true);
     setShowNextButton(false);
     setShowTryAgainButton(false);
@@ -224,12 +224,10 @@ const WordPuzzle = ({
     newDraggableBorderStyles.fill('dashed');
     setDraggableBorderStyles(newDraggableBorderStyles);
 
-    handleNextQuestion();
-    // Additional logic for moving to the next question
+    handleNextScreen();
   };
 
   const handleTryAgainButtonClick = () => {
-    // Reset states to allow user to try again
     setShowSubmitButton(true);
     setShowTryAgainButton(false);
     setIsAnswerCorrect(false);
@@ -242,15 +240,15 @@ const WordPuzzle = ({
     const newDraggableBorderStyles = [...draggableBorderStyles];
     newDraggableBorderStyles.fill('dashed');
     setDraggableBorderStyles(newDraggableBorderStyles);
-    // Additional logic if needed
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.word}>Divide the word "{word}" into syllables</Text>
+    <View style={styles.container} testID={testID}>
+      <Text style={styles.word}>Drag the syllables to complete "{word}"</Text>
       <View style={styles.inputArea}>
         {inputBoxesRef.map((box, index) => (
           <View
+            testID={`inputBox-${index}`}
             key={index}
             style={[styles.inputBox, {borderColor: inputBoxColors[index]}]}
           />
@@ -259,6 +257,7 @@ const WordPuzzle = ({
       {draggables.map((draggable, index) => (
         <Animated.View
           key={index}
+          testID={`DraggableItem-${index}`}
           {...(panResponders[index] ? panResponders[index].panHandlers : {})}
           style={[
             draggable.pan.getLayout(),
@@ -274,9 +273,11 @@ const WordPuzzle = ({
 
       {showSubmitButton && (
         <TouchableOpacity
-          style={commonStyles.buttonContainer}
-          onPress={handleSubmit}>
-          <Text style={commonStyles.buttonTitle}>Submit</Text>
+          style={[commonStyles.buttonContainer, styles.submitButton]}
+          onPress={handleSubmit}
+          accessibilityLabel="Submit your answer"
+        >
+          <Text style={commonStyles.buttonTitle}>Check Answer</Text>
         </TouchableOpacity>
       )}
       {!showSubmitButton && (
@@ -308,12 +309,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 30,
   },
+  submitButton: {
+    position: 'absolute',
+    bottom: 30,
+    // left: 20,
+    // right: 20,
+  },
   inputArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    //  marginBottom: 20,
     position: 'absolute',
-    top: 150, // Position the input boxes at a fixed position
+    top: 150,
   },
   inputBox: {
     width: 60,
@@ -321,18 +327,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'black',
     marginHorizontal: 5,
-  },
-  plus: {
-    fontSize: 15,
-    //marginHorizontal: 5,
-  },
-  imageContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    paddingBottom: 52,
   },
   draggableBox: {
     width: 60,
@@ -343,38 +337,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'black',
     borderStyle: 'dashed',
-    // margin: 5,
     position: 'absolute',
-  },
-  button: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginBottom: 10,
-    marginTop: 20,
-    borderRadius: 10,
-    zIndex: 1,
-  },
-  submitButton: {
-    backgroundColor: '#9AAB63',
-    padding: 10,
-    marginBottom: 10,
-    marginTop: 20,
-    borderRadius: 10,
-    paddingHorizontal: 80,
-    paddingVertical: 10,
-    position: 'absolute',
-    bottom: 30,
-  },
-  submitButton_text: {
-    fontFamily: 'TildaSans-Regular',
-    fontSize: 15,
-    alignSelf: 'center',
-    color: 'white',
-  },
-  button_text: {
-    fontFamily: 'TildaSans-Regular',
-    fontSize: 15,
-    alignSelf: 'center',
   },
 });
 

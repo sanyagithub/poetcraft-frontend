@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -21,10 +21,29 @@ const WordScantion = ({
   lineText,
   syllables,
   correctPattern,
-  handleNextQuestion,
+  handleNextScreen,
   explanation,
   audioId,
+  testID
 }) => {
+  console.log(testID)
+  //const scrollViewVerticalRef = useRef(null);
+  const scrollViewHorizontalRef = useRef(null);
+
+  useEffect(() => {
+    // TODO: Check if you need to add vertical scroll
+    // if (scrollViewVerticalRef.current) {
+    //   console.log('Vertical ScrollView ref:', scrollViewVerticalRef.current);
+    //   setTimeout(() => {
+    //     scrollViewVerticalRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    //   }, 100);
+    // }
+    if (scrollViewHorizontalRef.current) {
+      console.log('Horizontal ScrollView ref:', scrollViewHorizontalRef.current);
+      scrollViewHorizontalRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    }
+  }, [testID]);
+
   useEffect(() => {
     async function fetchData() {
       if (audioId != null) {
@@ -129,7 +148,7 @@ const WordScantion = ({
     if (currentStep === 1) {
       setCurrentStep(2);
     } else if (currentStep === 2) {
-      handleNextQuestion();
+      handleNextScreen();
     }
   };
 
@@ -161,13 +180,13 @@ const WordScantion = ({
           </TouchableOpacity>
         )}
       </View>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent} testID={testID}>
         {audioId == null ? (
           <View style={styles.instructionContainer}>
             <Text style={styles.instructionTitle}>
               {currentStep === 1
-                ? `Tap on the boxes above to mark the stressed syllables in the word ${lineText}`
-                : `Tap the boxes above to mark the unstressed syllables ${lineText}`}
+                ? `Tap the boxes to highlight stressed syllables in ${lineText}`
+                : `Tap the boxes to highlight unstressed syllables ${lineText}`}
             </Text>
           </View>
         ) : (
@@ -188,7 +207,7 @@ const WordScantion = ({
             </View>
           </View>
         )}
-        <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={true} ref={scrollViewHorizontalRef}>
           <View style={styles.tableContainer}>
             <View style={styles.row}>
               {syllables.map((syllable, syllableIndex) => (
@@ -196,6 +215,7 @@ const WordScantion = ({
                   key={`input-wrapper-${syllableIndex}`}
                   style={styles.cell}>
                   <TouchableOpacity
+                    testID={`WordSyllable-${syllable}`}
                     key={`input-${syllableIndex}`}
                     style={[
                       styles.input,
@@ -233,7 +253,7 @@ const WordScantion = ({
         <TouchableOpacity
           style={commonStyles.buttonContainer}
           onPress={checkAnswers}>
-          <Text style={commonStyles.buttonTitle}>Submit</Text>
+          <Text style={commonStyles.buttonTitle}>Check Your Answer</Text>
         </TouchableOpacity>
       ) : (
         <AnswerFeedbackModal
@@ -392,9 +412,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    backgroundColor: 'white',
+   // backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'black',
     width: 40,
     height: 50,
     textAlign: 'center',
@@ -439,6 +459,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
     paddingHorizontal: 16,
+    marginTop: 10,
   },
   arrowWrapper: {
     flexDirection: 'row',
@@ -494,10 +515,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   goBackIcon: {
-    // marginLeft: 25,
-    width: 100,
-    height: 31,
-    // marginBottom: 10,
+    width: 160,            // Increase the width for better visibility
+    height: 50,           // Make the icon more square for prominence
   },
   imageContainer: {
     position: 'absolute',

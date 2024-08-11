@@ -9,6 +9,7 @@ import Courses from './Courses';
 import ContentRenderer from './ContentRenderer';
 import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QuestionFlow = ({route}) => {
   // console.log(route.params);
@@ -23,7 +24,7 @@ const QuestionFlow = ({route}) => {
 
     async function fetchData() {
       console.log('last', lastQuestion);
-      setCurrentQuestionIndex(lastQuestion + 1);
+      setCurrentQuestionIndex(lastQuestion ? lastQuestion : 0);
       // console.log(moduleId);
       const questions = await getQuestions(moduleId);
       //console.log(questions);
@@ -93,11 +94,12 @@ const QuestionFlow = ({route}) => {
       }
 
       if (moduleId === 3) {
+        console.log(" cuurent question index", currentQuestionIndex);
         setQuestions([
           {
             type: 'CONTENT',
             heading: 'Symbols for Stressed and Unstressed Syllables\n',
-            text: (
+            text:(
               <Text>
                 In scansion, we use specific symbols to mark stressed and
                 unstressed syllables:{'\n'}
@@ -124,7 +126,7 @@ const QuestionFlow = ({route}) => {
               'By consistently marking the stressed and unstressed syllables, you will develop a clearer understanding of the rhythm and meter in poetry.' +
               '\n',
           },
-          ...questions.slice(0, 9),
+          ...questions.slice(0, 7),
           {
             type: 'CONTENT',
             heading: 'What is Phrasal Accent?',
@@ -141,7 +143,7 @@ const QuestionFlow = ({route}) => {
           },
           {
             type: 'CONTENT',
-            heading: 'How to Mark Syllables in a Phrase\n',
+            heading: 'How to Mark Syllables in a Phrase',
             text:
               'When you encounter a phrase, follow these steps:\n' +
               '\n' +
@@ -150,17 +152,17 @@ const QuestionFlow = ({route}) => {
               'By consistently marking the stressed and unstressed syllables in phrases, you will better understand the rhythm and meter in poetry.\n\n' +
               '\n',
           },
-          ...questions.slice(10, 16),
+          ...questions.slice(7, 13),
           {
             type: 'CONTENT',
-            heading: 'What is Performative Accent?\n',
+            heading: 'What is Performative Accent?',
             text:
               'Performative accent is the way people emphasize certain syllables when speaking to express emotions or thoughts. \nThis type of accent showcases the flexibility and expressiveness of meter in poetry, allowing it to do magical things.\n' +
               '\n',
           },
           {
             type: 'CONTENT',
-            heading: 'Flexibility with Monosyllabic Words\n',
+            heading: 'Flexibility with Monosyllabic Words',
             text:
               'The flexibility of performative accent is especially evident with monosyllabic words. For instance, in the phrase “I love you,” the emphasis can be placed on any of the three syllables, changing the meaning each time:\n' +
               '\n' +
@@ -171,20 +173,19 @@ const QuestionFlow = ({route}) => {
           },
           {
             type: 'CONTENT',
-            heading: 'Influence of Meter on Performative Stress\n',
+            heading: 'Influence of Meter on Performative Stress',
             text:
               "The structure of meter in poetry can influence or even force the reader to emphasize certain syllables, affecting performative stress and, consequently, the meaning. \nWriting metrical poetry is a unique way to get inside another person's vocal apparatus and guide their use of performative stress in a specific way.\n" +
               '\n\n' +
               'By understanding and utilizing performative accent, poets can add depth and emotional nuance to their work, making their poetry more impactful and expressive.\n' +
               '\n',
           },
-          ...questions.slice(17),
+          ...questions.slice(13),
         ]);
       }
 
       if (moduleId === 4) {
         setQuestions([
-          {},
           ...questions.slice(0, 2),
           {
             type: 'CONTENT',
@@ -213,25 +214,52 @@ const QuestionFlow = ({route}) => {
     fetchData();
   }, [lastQuestion, moduleId]);
 
-  const handleNextQuestion = async () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      const awardData = getAwardData(moduleId);
-      await addAward(
-        email,
-        courseId,
-        moduleId,
-        awardData.awardTitle,
-        awardData.awardImageUrl,
-      );
+  useEffect(() => {
+    if (questions.length > 0 && currentQuestionIndex >= questions.length) {
       navigation.navigate('CompletionScreen', {
-        awardImageUrl: awardData.awardImageUrl,
-        awardTitle: awardData.awardTitle,
+        moduleId: moduleId,
+        courseId: courseId,
       });
     }
-    await updateUserProgress(email, courseId, moduleId);
+  }, [currentQuestionIndex, questions.length, navigation, moduleId, courseId]);
+
+  const handleNextScreen = async () => {
+    if (currentQuestionIndex < questions.length) {
+      const nextIndex = currentQuestionIndex + 1;
+      await updateQuestion(nextIndex);
+      setCurrentQuestionIndex(nextIndex);
+    }
   };
+
+  const getDisplayedProgress = () => {
+    // This calculates the progress based on the index in the questions array
+    const actualQuestionsCompleted = questions.slice(0, currentQuestionIndex).filter(q => q.type !== 'CONTENT').length;
+    const totalQuestions = questions.filter(q => q.type !== 'CONTENT').length;
+
+    return {
+      actualQuestionsCompleted,
+      totalProgress: currentQuestionIndex + 1, // Overall progress including content
+      percentage: ((currentQuestionIndex + 1) / questions.length) * 100,
+    };
+  };
+
+  const updateQuestion = async (nextProgress) => {
+    try {
+      // Sync only the progress on actual questions
+      if (nextProgress !== undefined) {
+        console.log("progress - ", nextProgress);
+        await updateUserProgress(email, courseId, moduleId, nextProgress);
+      } else {
+        console.error("nextProgress is undefined, skipping update");
+      }
+    } catch (error) {
+      console.error("Failed to update question progress:", error);
+    }
+  };
+
+  // const updateQuestion = async () => {
+  //   await updateUserProgress(email, courseId, moduleId);
+  // };
 
   const getAwardData = moduleId => {
     switch (moduleId) {
@@ -260,22 +288,28 @@ const QuestionFlow = ({route}) => {
     }
   };
 
-  console.log('length-', questions.length);
-  console.log('current index', currentQuestionIndex);
+  console.log('length of screens-', questions.length);
+  console.log('current index of screen', currentQuestionIndex);
+
+  const progress = getDisplayedProgress();
 
   return (
     <GradientBackground>
       <View style={commonStyles.container}>
-        {questions.length > 0 &&
+        {/*<Text>Progress: {progress.percentage.toFixed(0)}%</Text>*/}
+        {/*/!* Display a progress bar *!/*/}
+        {/*<View style={{width: `${progress.percentage}%`, height: 10, backgroundColor: 'green'}} />*/}
+
+        {questions.length > 0 && currentQuestionIndex < questions.length &&
           (questions[currentQuestionIndex].type === 'CONTENT' ? (
             <ContentRenderer
               content={questions[currentQuestionIndex]}
-              handleNextQuestion={handleNextQuestion}
+              handleNextScreen={handleNextScreen}
             />
           ) : (
             <QuestionRenderer
               question={questions[currentQuestionIndex]}
-              handleNextQuestion={handleNextQuestion}
+              handleNextScreen={handleNextScreen}
             />
           ))}
       </View>

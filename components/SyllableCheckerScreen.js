@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import commonStyles from '../styles/commonStyles';
@@ -19,22 +20,29 @@ export default class SyllableCheckerScreen extends Component {
       word: '',
       syllables: [],
       error: '',
+      isLoading: false,
     };
   }
 
   toggleButtonState = () => {
     if (this.state.word.trim() === '') {
-      this.setState({error: 'Please enter a word'});
+      this.setState({error: 'Oops! It looks like you forgot to enter a word.'});
       return;
     }
+
+    this.setState({isLoading: true});
 
     axios
       .get(`${API_BASE_URL}/api/auth/word/` + this.state.word.toLowerCase())
       .then(response => {
-        this.setState({syllables: response.data, error: ''});
+        this.setState({syllables: response.data, error: '', isLoading: false});
       })
       .catch(error => {
-        this.setState({error: 'Word not found'});
+        const errorMessage =
+          error.response && error.response.status === 404
+            ? 'Word not found'
+            : 'An error occurred. Please try again later.';
+        this.setState({error: errorMessage, isLoading: false});
       });
   };
 
@@ -43,15 +51,15 @@ export default class SyllableCheckerScreen extends Component {
       item.type === 'stress'
         ? styles.stressedSyllableText
         : item.type === 'secondary stress'
-        ? styles.secondaryStressSyllableText
-        : styles.unstressedSyllableText;
+          ? styles.secondaryStressSyllableText
+          : styles.unstressedSyllableText;
 
     const isStressed =
       item.type === 'stress'
         ? '( / ) is stressed'
         : item.type === 'secondary stress'
-        ? '( \\ ) is secondary stressed'
-        : '( u ) is unstressed';
+          ? '( \\ ) is secondary stressed'
+          : '( u ) is unstressed';
 
     return (
       <View style={styles.syllableContainer}>
@@ -67,30 +75,42 @@ export default class SyllableCheckerScreen extends Component {
       <GradientBackground>
         <View style={commonStyles.container}>
           <Text style={styles.header}>
-            Check the stress levels of syllables in a word
+            Discover the Stress Patterns in Your Words
           </Text>
           <TextInput
             autoCapitalize="none"
             style={styles.input}
-            placeholder="Enter the word..."
+            placeholder="Enter a word to check stress..."
+            placeholderTextColor='#DDB1E4'
             onChangeText={text => {
               this.setState({word: text});
             }}
+            testID="syllableInput"
+            accessibilityLabel="Input field for word syllable check"
           />
           {this.state.error ? (
             <Text style={styles.errorText}>{this.state.error}</Text>
           ) : null}
           <TouchableOpacity
             style={commonStyles.buttonContainer}
-            onPress={this.toggleButtonState}>
-            <Text style={commonStyles.buttonTitle}>Submit</Text>
+            onPress={this.toggleButtonState}
+            accessibilityLabel="Analyze button to check syllable stress"
+            testID="analyzeButton"
+          >
+            <Text style={commonStyles.buttonTitle}>Analyze</Text>
           </TouchableOpacity>
-          <FlatList
-            data={this.state.syllables}
-            renderItem={this.renderSyllable}
-            keyExtractor={item => item.syllable}
-            contentContainerStyle={styles.listContainer}
-          />
+          {this.state.isLoading && (
+            <ActivityIndicator size="large" color="#DDB1E4" testID="loadingIndicator" />
+          )}
+          {this.state.syllables.length > 0 && (
+            <FlatList
+              data={this.state.syllables}
+              renderItem={this.renderSyllable}
+              keyExtractor={item => item.syllable}
+              contentContainerStyle={styles.listContainer}
+              testID="syllableList"
+            />
+          )}
         </View>
       </GradientBackground>
     );
@@ -166,6 +186,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   customButtonContainer: {
-    margin: 30, // Add padding here
+    margin: 30,
   },
 });
