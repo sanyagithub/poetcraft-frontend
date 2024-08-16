@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, it } from "@jest/globals";
+import { beforeAll, beforeEach, describe, it } from "@jest/globals";
 
 describe('Syllable Checker Screen', () => {
   beforeAll(async () => {

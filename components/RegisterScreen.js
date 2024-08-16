@@ -6,7 +6,7 @@ import {
   View,
   TextInput,
   Pressable,
-  StyleSheet, Platform, KeyboardAvoidingView, ActivityIndicator, TouchableOpacity,
+  StyleSheet, Platform, KeyboardAvoidingView, ActivityIndicator, TouchableOpacity, ScrollView,
 } from "react-native";
 import commonStyles from '../styles/commonStyles';
 import GradientBackground from './GradientBackground';
@@ -121,7 +121,9 @@ const RegisterScreen = ({navigation}) => {
     <GradientBackground>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1}}>
+        style={{flex: 1}}
+      >
+        <ScrollView testID="scrollView" contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
       <View style={commonStyles.container} testID="registerScreen">
         <Image
           source={require('../images/registration.png')} // Replace with the path to your image file
@@ -193,6 +195,7 @@ const RegisterScreen = ({navigation}) => {
         )}
 
       </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </GradientBackground>
   );

@@ -1,3 +1,5 @@
+import { beforeAll, beforeEach, describe, it } from "@jest/globals";
+
 describe('Example', () => {
   beforeAll(async () => {
     await device.launchApp();
